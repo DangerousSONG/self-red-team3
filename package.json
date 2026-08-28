@@ -1,0 +1,12 @@
+{
+  "name": "cybersec-range-local",
+  "version": "1.0.0",
+  "private": true,
+  "description": "网安攻防演练场本地前端重写版",
+  "scripts": {
+    "build": "node scripts/build-static.js",
+    "dev": "node server.js",
+    "check": "node --check data.js && node --check pages.js && node --check app.js && node --check server.js && node --check dashboard/script.js",
+    "test": "node --test tests/app.test.js"
+  }
+}

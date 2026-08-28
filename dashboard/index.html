@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>靶场实时攻防态势总览</title>
+    <link rel="stylesheet" href="./styles.css?v=20260818-topology-legend-v2" />
+  </head>
+  <body>
+    <main class="stage" aria-label="靶场实时攻防态势总览">
+      <img class="scene-map" src="./assets/scene-map.png" alt="" />
+      <div class="depth-vignette" aria-hidden="true"></div>
+      <div class="scan-grid" aria-hidden="true"></div>
+
+      <header class="title-plate">
+        <div class="corner-line"></div>
+        <h1>靶场实时攻防态势总览</h1>
+        <p>安全域 · 训练 · 测评 · 对抗 · 一体化管控</p>
+      </header>
+
+      <nav class="system-ribbon" aria-label="系统运行状态">
+        <span><b class="ok-dot"></b>平台运行正常</span>
+        <span>威胁等级 <strong class="warn-text">中</strong></span>
+        <span>今日告警 <strong class="danger-text" data-number="233" data-min="219" data-max="247">233</strong></span>
+        <span>健康率 <strong class="cyan-text" data-percent="99.6" data-min="99.1" data-max="99.9">99.6%</strong></span>
+        <span>节点在线 <strong class="cyan-text">8/8</strong></span>
+        <span class="time-block">
+          <strong id="clock">14:47:54</strong>
+          <small id="clock-date">2026.08.18</small>
+        </span>
+      </nav>
+
+      <section class="kpi-row" aria-label="靶场关键指标">
+        <article class="kpi-card">
+          <span class="kpi-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="5.2" width="15" height="10.8" rx="1.4" /><path d="M9 19h6M12 16v3M7.5 13.3h9" /></svg>
+          </span>
+          <p>靶场环境总数</p>
+          <strong data-number="52847" data-min="52690" data-max="53040">52,847</strong>
+        </article>
+        <article class="kpi-card">
+          <span class="kpi-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path class="svg-fill" d="M12 3.2 18.6 5.8v5.5c0 4.1-2.4 7.3-6.6 9.4-4.2-2.1-6.6-5.3-6.6-9.4V5.8z" /><path class="svg-cut" d="M11 8h2v6h-2z" /><circle class="svg-cut" cx="12" cy="16.7" r="1" /></svg>
+          </span>
+          <p>在线运行实例</p>
+          <strong data-number="18392" data-min="18260" data-max="18520">18,392</strong>
+        </article>
+        <article class="kpi-card">
+          <span class="kpi-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.6" y="5" width="14.8" height="12.8" rx="1.4" /><path d="M8 9h8M8 12h8M8 15h5" /><circle class="svg-fill" cx="16.4" cy="15" r="1.2" /></svg>
+          </span>
+          <p>今日训练</p>
+          <strong data-number="3286" data-min="3210" data-max="3360">3,286</strong>
+        </article>
+        <article class="kpi-card">
+          <span class="kpi-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5.4" y="5" width="13.2" height="15" rx="1.5" /><path d="M9 5V3.8h6V5M8.4 9h7.2M8.4 12.5h7.2M8.4 16h4.8" /></svg>
+          </span>
+          <p>进行中测评</p>
+          <strong data-number="127" data-min="119" data-max="136">127</strong>
+        </article>
+        <article class="kpi-card">
+          <span class="kpi-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.1" /><path d="M6.3 18.8c.8-3.3 2.8-5 5.7-5s4.9 1.7 5.7 5" /><path d="M18.7 7.2h2.8M20.1 5.8v2.8" /></svg>
+          </span>
+          <p>对抗演练</p>
+          <strong data-number="8" data-min="7" data-max="11">8</strong>
+        </article>
+        <article class="kpi-card">
+          <span class="kpi-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18v-4.3A5.1 5.1 0 0 1 12 8.5a5.1 5.1 0 0 1 5 5.2V18" /><path d="M8.4 18h7.2M10 20h4M9.2 15.2h.1M14.7 15.2h.1" /><path d="M12 14.8v2.1" /></svg>
+          </span>
+          <p>今日攻防事件</p>
+          <strong data-number="14572" data-min="14420" data-max="14760">14,572</strong>
+        </article>
+      </section>
+
+      <aside class="left-column" aria-label="模型能力榜单">
+        <section class="hud-panel overview-panel" hidden>
+          <h2>训练概览</h2>
+          <div class="mini-stats">
+            <span><small>在线用户</small><b data-number="1842" data-min="1780" data-max="1910">1,842</b></span>
+            <span><small>今日总帧</small><b data-percent="68.4" data-min="66.8" data-max="71.5">68.4%</b></span>
+            <span><small>累计训练</small><b data-suffix="h" data-number="1274" data-min="1265" data-max="1289">1,274h</b></span>
+          </div>
+        </section>
+
+        <section class="hud-panel ranking-panel benchmark-panel">
+          <h2>模型排行榜</h2>
+          <div class="benchmark-viewport">
+            <div class="benchmark-track">
+              <div class="benchmark-set">
+                <article class="benchmark-card">
+                  <header><b>CyberGym</b><span>漏洞挖掘</span></header>
+                  <div class="benchmark-lead">
+                    <strong>国内第 1 / 总榜第 3</strong>
+                    <em>成功率 <i>90.84%</i></em>
+                  </div>
+                  <p>刷新中国团队历史最高分，领先 Anthropic 7.74%。</p>
+                  <ol class="benchmark-rank">
+                    <li><i>1</i><span>MDASH</span><b>92.00%</b></li>
+                    <li><i>2</i><span>Wiz Atlas</span><b>90.90%</b></li>
+                    <li class="is-current"><i>3</i><span>DoGNAVY</span><b>90.84%</b></li>
+                    <li class="rank-gap"><i>···</i><span>其他参赛模型</span><b>—</b></li>
+                    <li><i>7</i><span>Xuanwu Autin AI</span><b>84.80%</b></li>
+                    <li><i>8</i><span>Claude Mythos Preview</span><b>83.10%</b></li>
+                    <li><i>12</i><span>MopMonk Agent</span><b>73.10%</b></li>
+                    <li><i>13</i><span>JiuXuan</span><b>72.90%</b></li>
+                    <li><i>14</i><span>Whizard</span><b>68.90%</b></li>
+                  </ol>
+                </article>
+                <article class="benchmark-card">
+                  <header><b>ExploitGym</b><span>漏洞利用</span></header>
+                  <div class="benchmark-lead">
+                    <strong>国内第 1 / 总榜第 4</strong>
+                    <em>利用 <i>64</i> 个</em>
+                  </div>
+                  <p>与 OpenAI、Anthropic 同台竞技，成绩已提交。</p>
+                  <ol class="benchmark-rank">
+                    <li><i>1</i><span>GPT-5.6-Sol</span><b>293</b></li>
+                    <li><i>2</i><span>Claude Mythos Preview</span><b>157</b></li>
+                    <li><i>3</i><span>GPT-5.5</span><b>129</b></li>
+                    <li class="is-current"><i>4</i><span>DoGNAVY</span><b>64</b></li>
+                    <li><i>5</i><span>GPT-5.4</span><b>61</b></li>
+                    <li class="rank-gap"><i>···</i><span>其他参赛模型</span><b>—</b></li>
+                    <li><i>9</i><span>GLM-5.1</span><b>4</b></li>
+                  </ol>
+                </article>
+                <article class="benchmark-card">
+                  <header><b>PatchEval</b><span>漏洞修复</span></header>
+                  <div class="benchmark-lead">
+                    <strong>暂列总榜第 1</strong>
+                    <em>1h 修复 <i>43.48%</i></em>
+                  </div>
+                  <p>全栈自研智能体，领先 Anthropic 2.61%。</p>
+                  <ol class="benchmark-rank">
+                    <li class="is-current"><i>1</i><span>DoGNAVY</span><b>43.48%</b></li>
+                    <li><i>2</i><span>Anthropic-Defending</span><b>40.87%</b></li>
+                    <li><i>3</i><span>OpenCode</span><b>37.39%</b></li>
+                    <li><i>4</i><span>OpenHands</span><b>35.10%</b></li>
+                  </ol>
+                </article>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="hud-panel agent-panel capability-panel">
+          <h2>Agent能力评估 <span id="agentPager">01 / 05</span></h2>
+          <div class="capability-body">
+            <div class="agent-carousel-head">
+              <div>
+                <small>当前 Agent</small>
+                <b id="capAgentName">DoGNAVY</b>
+              </div>
+              <span id="capAgentScenario">漏洞挖掘 / 利用 / 修复</span>
+              <nav class="agent-dots" aria-hidden="true">
+                <i class="is-active"></i><i></i><i></i><i></i><i></i>
+              </nav>
+            </div>
+            <article class="capability-block radar-capability">
+              <header><b>Agent能力维度雷达</b><span id="capLevelMean">平均 89.9</span></header>
+              <div class="cap-radar-wrap">
+                <svg class="cap-radar" viewBox="0 0 240 168" aria-hidden="true">
+                  <g class="cap-radar-grid">
+                    <polygon points="120,16 184.7,63 159.9,139 80.1,139 55.3,63" />
+                    <polygon points="120,31 172.6,69.2 152.5,131 87.5,131 67.4,69.2" />
+                    <polygon points="120,47 159.6,75.8 144.5,122.4 95.5,122.4 80.4,75.8" />
+                    <polygon points="120,63 146.6,82.2 136.5,113.8 103.5,113.8 93.4,82.2" />
+                    <line x1="120" y1="86" x2="120" y2="16" />
+                    <line x1="120" y1="86" x2="184.7" y2="63" />
+                    <line x1="120" y1="86" x2="159.9" y2="139" />
+                    <line x1="120" y1="86" x2="80.1" y2="139" />
+                    <line x1="120" y1="86" x2="55.3" y2="63" />
+                  </g>
+                  <polygon id="capRadarNow" class="cap-radar-now" points="120,20.2 178.2,65.4 154.7,132 85.4,131.8 61.9,65.4" />
+                  <polygon id="capRadarTarget" class="cap-radar-target" points="120,31.4 167.9,70.4 148.0,124.5 91.2,125.6 70.7,70.0" />
+                  <g class="cap-radar-web">
+                    <polygon points="120,16 184.7,63 159.9,139 80.1,139 55.3,63" />
+                    <polygon points="120,31 172.6,69.2 152.5,131 87.5,131 67.4,69.2" />
+                    <polygon points="120,47 159.6,75.8 144.5,122.4 95.5,122.4 80.4,75.8" />
+                    <polygon points="120,63 146.6,82.2 136.5,113.8 103.5,113.8 93.4,82.2" />
+                    <line x1="120" y1="86" x2="120" y2="16" />
+                    <line x1="120" y1="86" x2="184.7" y2="63" />
+                    <line x1="120" y1="86" x2="159.9" y2="139" />
+                    <line x1="120" y1="86" x2="80.1" y2="139" />
+                    <line x1="120" y1="86" x2="55.3" y2="63" />
+                  </g>
+                  <g id="capRadarDots" class="cap-radar-dots">
+                    <circle cx="120" cy="20.2" r="2.2" />
+                    <circle cx="178.2" cy="65.4" r="2.2" />
+                    <circle cx="154.7" cy="132" r="2.2" />
+                    <circle cx="85.4" cy="131.8" r="2.2" />
+                    <circle cx="61.9" cy="65.4" r="2.2" />
+                  </g>
+                </svg>
+                <span class="cap-radar-label label-knowledge">知识判断 <b data-radar-score="0">94</b></span>
+                <span class="cap-radar-label label-tool">工具使用 <b data-radar-score="1">91</b></span>
+                <span class="cap-radar-label label-recon">侦察枚举 <b data-radar-score="2">89</b></span>
+                <span class="cap-radar-label label-vuln">漏洞识别 <b data-radar-score="3">92</b></span>
+                <span class="cap-radar-label label-cost">成本效率 <b data-radar-score="4">88</b></span>
+                <div class="cap-radar-legend" aria-hidden="true">
+                  <span><i class="legend-now"></i>当前能力</span>
+                  <span><i class="legend-target"></i>目标基线</span>
+                </div>
+              </div>
+            </article>
+            <article class="capability-block efficiency-block">
+              <header><b>成本效率</b><span>时间 / token / 金额</span></header>
+              <div class="efficiency-metrics">
+                <span><small>时间开销</small><b id="effTime">2.4s</b></span>
+                <span><small>Token 开销</small><b id="effToken">38K</b></span>
+                <span><small>金额估算</small><b id="effCost">0.84元</b></span>
+              </div>
+              <div class="efficiency-bars">
+                <div data-eff-bar="0"><span>推理时延</span><em><i style="width: 76%"></i></em><b>76.0%</b></div>
+                <div data-eff-bar="1"><span>Token 控制</span><em><i style="width: 83%"></i></em><b>83.0%</b></div>
+                <div data-eff-bar="2"><span>成本压缩</span><em><i style="width: 69%"></i></em><b>69.0%</b></div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </aside>
+
+      <h2 class="topology-title">实时攻防态势拓扑</h2>
+      <section class="topology" aria-label="实时攻防态势拓扑">
+        <svg class="flow-network" viewBox="0 0 1192 760" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="normalGradient" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#55a8ff" />
+              <stop offset="52%" stop-color="#c1e9ff" />
+              <stop offset="100%" stop-color="#4a9cff" />
+            </linearGradient>
+            <marker id="arrowNormal" markerWidth="6" markerHeight="6" refX="5.4" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#b9e5ff" />
+            </marker>
+            <marker id="arrowAttack" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+              <path d="M0,0 L10,5 L0,10 Z" fill="#ff8b72" />
+            </marker>
+            <mask id="iconCutout" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" x="0" y="0" width="1192" height="760" style="mask-type: luminance;">
+              <rect x="0" y="0" width="1192" height="760" fill="white" />
+              <rect x="34" y="251" width="50" height="50" rx="8" fill="black" />
+              <rect x="108" y="251" width="50" height="50" rx="8" fill="black" />
+              <rect x="181" y="251" width="50" height="50" rx="8" fill="black" />
+              <rect x="34" y="320" width="50" height="50" rx="8" fill="black" />
+              <rect x="108" y="320" width="50" height="50" rx="8" fill="black" />
+              <rect x="181" y="320" width="50" height="50" rx="8" fill="black" />
+              <rect x="345" y="248" width="50" height="50" rx="8" fill="black" />
+              <rect x="447" y="248" width="50" height="50" rx="8" fill="black" />
+              <rect x="345" y="314" width="50" height="50" rx="8" fill="black" />
+              <rect x="447" y="314" width="50" height="50" rx="8" fill="black" />
+              <rect x="618" y="140" width="50" height="50" rx="8" fill="black" />
+              <rect x="692" y="140" width="50" height="50" rx="8" fill="black" />
+              <rect x="765" y="140" width="50" height="50" rx="8" fill="black" />
+              <rect x="914" y="140" width="50" height="50" rx="8" fill="black" />
+              <rect x="988" y="140" width="50" height="50" rx="8" fill="black" />
+              <rect x="1062" y="140" width="50" height="50" rx="8" fill="black" />
+              <rect x="618" y="476" width="50" height="50" rx="8" fill="black" />
+              <rect x="692" y="476" width="50" height="50" rx="8" fill="black" />
+              <rect x="765" y="476" width="50" height="50" rx="8" fill="black" />
+              <rect x="937" y="444" width="50" height="50" rx="8" fill="black" />
+              <rect x="1041" y="444" width="50" height="50" rx="8" fill="black" />
+              <rect x="937" y="510" width="50" height="50" rx="8" fill="black" />
+              <rect x="1041" y="510" width="50" height="50" rx="8" fill="black" />
+            </mask>
+            <clipPath id="iconClearClip" clipPathUnits="userSpaceOnUse">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="
+                M0,0 H1192 V760 H0 Z
+                M34,251 H84 V301 H34 Z
+                M108,251 H158 V301 H108 Z
+                M181,251 H231 V301 H181 Z
+                M34,320 H84 V370 H34 Z
+                M108,320 H158 V370 H108 Z
+                M181,320 H231 V370 H181 Z
+                M345,248 H395 V298 H345 Z
+                M447,248 H497 V298 H447 Z
+                M345,314 H395 V364 H345 Z
+                M447,314 H497 V364 H447 Z
+                M618,140 H668 V190 H618 Z
+                M692,140 H742 V190 H692 Z
+                M765,140 H815 V190 H765 Z
+                M914,140 H964 V190 H914 Z
+                M988,140 H1038 V190 H988 Z
+                M1062,140 H1112 V190 H1062 Z
+                M618,476 H668 V526 H618 Z
+                M692,476 H742 V526 H692 Z
+                M765,476 H815 V526 H765 Z
+                M937,444 H987 V494 H937 Z
+                M1041,444 H1091 V494 H1041 Z
+                M937,510 H987 V560 H937 Z
+                M1041,510 H1091 V560 H1041 Z" />
+            </clipPath>
+          </defs>
+          <g class="zone-link-layer" aria-hidden="true">
+            <path id="zoneLinkA1B1" class="zone-link" d="M252 331 H292" />
+            <path id="zoneLinkB1C1" class="zone-link" d="M536 331 H560 V190 H584" />
+            <path id="zoneLinkC1C2" class="zone-link" d="M828 190 H876" />
+            <path id="zoneLinkB1D1" class="zone-link" d="M536 331 H560 V526 H584" />
+            <path id="zoneLinkD1D2" class="zone-link" d="M828 526 H876" />
+          </g>
+          <g class="flow-layer" clip-path="url(#iconClearClip)">
+            <path id="flowExternalReact" class="flow normal slow external-flow" d="M129 190 V220 H56 V253.5" />
+            <path id="flowReactDubbo" class="flow normal" d="M74 271.5 H351" marker-end="url(#arrowNormal)" />
+            <path id="flowDubboGis" class="flow normal slow" d="M387 271.5 H424 V164 H613" marker-end="url(#arrowNormal)" />
+            <path id="flowGisData" class="flow normal" d="M651 164 H907.2" marker-end="url(#arrowNormal)" />
+            <path id="flowDubboOps" class="flow normal slow" d="M387 271.5 H424 V500 H613" marker-end="url(#arrowNormal)" />
+            <path id="flowOpsData" class="flow normal" d="M651 500 H860 V468.5 H935" marker-end="url(#arrowNormal)" />
+          </g>
+          <g class="attack-flow-layer" clip-path="url(#iconClearClip)">
+            <path id="attackExternalReact" class="attack-flow" d="M129 190 V220 H56 V253.5" />
+            <path id="attackReactDubbo" class="attack-flow" d="M74 271.5 H351" />
+            <path id="attackDubboGis" class="attack-flow" d="M387 271.5 H424 V164 H613" />
+            <path id="attackGisData" class="attack-flow" d="M651 164 H907.2" />
+            <path id="attackDubboOps" class="attack-flow" d="M387 271.5 H424 V500 H613" />
+            <path id="attackOpsData" class="attack-flow" d="M651 500 H860 V468.5 H935" />
+          </g>
+          <g class="attack-arrow-layer" clip-path="url(#iconClearClip)">
+            <g id="attackArrowExternalReact" class="attack-arrow">
+              <path class="arrow-solid" d="M-10,-5 L-3,0 L-10,5 L-6.5,5 L0.5,0 L-6.5,-5 Z" />
+              <path class="arrow-outline arrow-outline-mid" d="M-3.5,-5.2 L3.6,0 L-3.5,5.2" />
+              <path class="arrow-outline arrow-outline-front" d="M2.2,-5.2 L9.3,0 L2.2,5.2" />
+              <animateMotion begin="indefinite" dur="1.05s" repeatCount="indefinite" rotate="auto"><mpath href="#flowExternalReact" /></animateMotion>
+            </g>
+            <g id="attackArrowReactDubbo" class="attack-arrow">
+              <path class="arrow-solid" d="M-10,-5 L-3,0 L-10,5 L-6.5,5 L0.5,0 L-6.5,-5 Z" />
+              <path class="arrow-outline arrow-outline-mid" d="M-3.5,-5.2 L3.6,0 L-3.5,5.2" />
+              <path class="arrow-outline arrow-outline-front" d="M2.2,-5.2 L9.3,0 L2.2,5.2" />
+              <animateMotion begin="indefinite" dur="1.6s" repeatCount="indefinite" rotate="auto"><mpath href="#flowReactDubbo" /></animateMotion>
+            </g>
+            <g id="attackArrowDubboGis" class="attack-arrow">
+              <path class="arrow-solid" d="M-10,-5 L-3,0 L-10,5 L-6.5,5 L0.5,0 L-6.5,-5 Z" />
+              <path class="arrow-outline arrow-outline-mid" d="M-3.5,-5.2 L3.6,0 L-3.5,5.2" />
+              <path class="arrow-outline arrow-outline-front" d="M2.2,-5.2 L9.3,0 L2.2,5.2" />
+              <animateMotion begin="indefinite" dur="1.45s" repeatCount="indefinite" rotate="auto"><mpath href="#flowDubboGis" /></animateMotion>
+            </g>
+            <g id="attackArrowGisData" class="attack-arrow">
+              <path class="arrow-solid" d="M-10,-5 L-3,0 L-10,5 L-6.5,5 L0.5,0 L-6.5,-5 Z" />
+              <path class="arrow-outline arrow-outline-mid" d="M-3.5,-5.2 L3.6,0 L-3.5,5.2" />
+              <path class="arrow-outline arrow-outline-front" d="M2.2,-5.2 L9.3,0 L2.2,5.2" />
+              <animateMotion begin="indefinite" dur="1.35s" repeatCount="indefinite" rotate="auto"><mpath href="#flowGisData" /></animateMotion>
+            </g>
+            <g id="attackArrowDubboOps" class="attack-arrow">
+              <path class="arrow-solid" d="M-10,-5 L-3,0 L-10,5 L-6.5,5 L0.5,0 L-6.5,-5 Z" />
+              <path class="arrow-outline arrow-outline-mid" d="M-3.5,-5.2 L3.6,0 L-3.5,5.2" />
+              <path class="arrow-outline arrow-outline-front" d="M2.2,-5.2 L9.3,0 L2.2,5.2" />
+              <animateMotion begin="indefinite" dur="1.75s" repeatCount="indefinite" rotate="auto"><mpath href="#flowDubboOps" /></animateMotion>
+            </g>
+            <g id="attackArrowOpsData" class="attack-arrow">
+              <path class="arrow-solid" d="M-10,-5 L-3,0 L-10,5 L-6.5,5 L0.5,0 L-6.5,-5 Z" />
+              <path class="arrow-outline arrow-outline-mid" d="M-3.5,-5.2 L3.6,0 L-3.5,5.2" />
+              <path class="arrow-outline arrow-outline-front" d="M2.2,-5.2 L9.3,0 L2.2,5.2" />
+              <animateMotion begin="indefinite" dur="1.25s" repeatCount="indefinite" rotate="auto"><mpath href="#flowOpsData" /></animateMotion>
+            </g>
+          </g>
+        </svg>
+
+        <div class="external-attacker" aria-label="External Attacker">
+          <i class="device-icon attacker"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.2" r="3.1" /><path d="M6.2 18.8c.8-3.5 2.8-5.2 5.8-5.2s5 1.7 5.8 5.2" /><path d="M5 5.8 3.6 4.4M19 5.8l1.4-1.4M12 3.2V1.6" /></svg></i>
+          <em>External Attacker</em>
+        </div>
+
+        <article class="zone topology-zone zone-public">
+          <div class="zone-head"><b>A1</b><span>公网接入区</span></div>
+          <div class="node-grid grid-6">
+            <span class="device attack-node" data-attack-node="react"><i class="device-icon web"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="12" rx="1.8" /><path d="M7 9h10M7 13h7M10 20h4M12 17v3" /></svg></i><em>React应用</em></span>
+            <span class="device"><i class="device-icon code"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h8l4 4v8H6z" /><path d="M14 6v4h4M9 14h6M9 17h4" /><circle class="svg-fill" cx="8" cy="9" r="1" /></svg></i><em>Gitea仓库</em></span>
+            <span class="device"><i class="device-icon mail"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="16" height="12" rx="1.7" /><path d="M5 8l7 5 7-5" /></svg></i><em>Postfix</em></span>
+            <span class="device"><i class="device-icon mail"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="16" height="12" rx="1.7" /><path d="M5 8l7 5 7-5M8 16h8" /></svg></i><em>Dovecot</em></span>
+            <span class="device"><i class="device-icon db"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3" /><path d="M5 6v10c0 1.7 3.1 3 7 3s7-1.3 7-3V6" /><path d="M5 11c0 1.7 3.1 3 7 3s7-1.3 7-3" /></svg></i><em>Redis</em></span>
+            <span class="device"><i class="device-icon queue"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="4" rx="1" /><rect x="5" y="10" width="14" height="4" rx="1" /><rect x="5" y="15" width="14" height="4" rx="1" /><path d="M8 7h4M8 12h4M8 17h4" /></svg></i><em>RabbitMQ</em></span>
+          </div>
+        </article>
+
+        <article class="zone topology-zone zone-business">
+          <div class="zone-head"><b>B1</b><span>业务应用区</span></div>
+          <div class="node-grid grid-4">
+            <span class="device attack-node" data-attack-node="dubbo"><i class="device-icon middleware"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="7" width="6" height="6" rx="1.2" /><rect x="14" y="7" width="6" height="6" rx="1.2" /><rect x="9" y="15" width="6" height="5" rx="1.1" /><path d="M10 10h4M12 13v2" /></svg></i><em>Dubbo服务</em></span>
+            <span class="device"><i class="device-icon registry"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="8" r="2.6" /><circle cx="17" cy="8" r="2.6" /><circle cx="12" cy="17" r="2.6" /><path d="M9.2 9.4l5.6 0M8.4 10.1l2.3 4.6M15.6 10.1l-2.3 4.6" /></svg></i><em>ZooKeeper</em></span>
+            <span class="device"><i class="device-icon monitor"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="12" rx="1.7" /><path d="M7 13h2l1.4-4 2.4 7 1.6-4H17M10 20h4M12 17v3" /></svg></i><em>SNMP监控</em></span>
+            <span class="device"><i class="device-icon logs"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="16" rx="1.5" /><path d="M8 8h8M8 12h8M8 16h5" /></svg></i><em>Syslog日志</em></span>
+          </div>
+        </article>
+
+        <article class="zone topology-zone zone-gis-service">
+          <div class="zone-head"><b>C1</b><span>GIS服务区</span></div>
+          <div class="node-grid grid-3">
+            <span class="device attack-node" data-attack-node="geoserver"><i class="device-icon gis"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 6.5 10 4l4 2 5.5-2.2v13.7L14 20l-4-2-5.5 2.2z" /><path d="M10 4v14M14 6v14" /></svg></i><em>GeoServer</em></span>
+            <span class="device"><i class="device-icon registry"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="8" r="2.6" /><circle cx="17" cy="8" r="2.6" /><circle cx="12" cy="17" r="2.6" /><path d="M9.2 9.4l5.6 0M8.4 10.1l2.3 4.6M15.6 10.1l-2.3 4.6" /></svg></i><em>Consul</em></span>
+            <span class="device"><i class="device-icon network"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" /><path d="M3.5 12h17M12 3.5c2.2 2.4 3.3 5.2 3.3 8.5s-1.1 6.1-3.3 8.5M12 3.5C9.8 5.9 8.7 8.7 8.7 12s1.1 6.1 3.3 8.5" /></svg></i><em>Squid代理</em></span>
+          </div>
+        </article>
+
+        <article class="zone topology-zone zone-gis-data">
+          <div class="zone-head"><b>C2</b><span>GIS数据区</span></div>
+          <div class="node-grid grid-3">
+            <span class="device attack-node" data-attack-node="postgres"><i class="device-icon db"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3" /><path d="M5 6v10c0 1.7 3.1 3 7 3s7-1.3 7-3V6" /><path d="M5 11c0 1.7 3.1 3 7 3s7-1.3 7-3" /></svg></i><em>PostgreSQL</em></span>
+            <span class="device"><i class="device-icon db"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3" /><path d="M5 6v10c0 1.7 3.1 3 7 3s7-1.3 7-3V6" /><path d="M5 11c0 1.7 3.1 3 7 3s7-1.3 7-3" /></svg></i><em>Cassandra</em></span>
+            <span class="device"><i class="device-icon db"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3" /><path d="M5 6v10c0 1.7 3.1 3 7 3s7-1.3 7-3V6" /><path d="M5 11c0 1.7 3.1 3 7 3s7-1.3 7-3" /></svg></i><em>InfluxDB</em></span>
+          </div>
+        </article>
+
+        <article class="zone topology-zone zone-ops">
+          <div class="zone-head"><b>D1</b><span>运维监控区</span></div>
+          <div class="node-grid grid-3">
+            <span class="device attack-node" data-attack-node="cacti"><i class="device-icon monitor"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="12" rx="1.7" /><path d="M7 13h2l1.4-4 2.4 7 1.6-4H17M10 20h4M12 17v3" /></svg></i><em>Cacti平台</em></span>
+            <span class="device"><i class="device-icon code"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h8l4 4v8H6z" /><path d="M14 6v4h4M9 14h6M9 17h4" /><circle class="svg-fill" cx="8" cy="9" r="1" /></svg></i><em>Git服务</em></span>
+            <span class="device"><i class="device-icon db"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3" /><path d="M5 6v10c0 1.7 3.1 3 7 3s7-1.3 7-3V6" /><path d="M5 11c0 1.7 3.1 3 7 3s7-1.3 7-3" /></svg></i><em>ClickHouse</em></span>
+          </div>
+        </article>
+
+        <article class="zone topology-zone zone-monitor-data">
+          <div class="zone-head"><b>D2</b><span>监控数据区</span></div>
+          <div class="node-grid grid-4">
+            <span class="device attack-node" data-attack-node="neo4j"><i class="device-icon db"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3" /><path d="M5 6v10c0 1.7 3.1 3 7 3s7-1.3 7-3V6" /><path d="M5 11c0 1.7 3.1 3 7 3s7-1.3 7-3" /></svg></i><em>Neo4j</em></span>
+            <span class="device"><i class="device-icon db"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3" /><path d="M5 6v10c0 1.7 3.1 3 7 3s7-1.3 7-3V6" /><path d="M5 11c0 1.7 3.1 3 7 3s7-1.3 7-3" /></svg></i><em>Cacti DB</em></span>
+            <span class="device"><i class="device-icon printer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8V4h10v4" /><rect x="5" y="9" width="14" height="8" rx="1.6" /><path d="M8 15h8v5H8zM8 12h.1M16 12h.1" /></svg></i><em>CUPS</em></span>
+            <span class="device"><i class="device-icon network"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" /><path d="M3.5 12h17M12 3.5c2.2 2.4 3.3 5.2 3.3 8.5s-1.1 6.1-3.3 8.5M12 3.5C9.8 5.9 8.7 8.7 8.7 12s1.1 6.1 3.3 8.5" /></svg></i><em>iperf</em></span>
+          </div>
+        </article>
+
+        <div class="probe probe-dmz">
+          <span class="probe-pin"></span>
+          <b>#DMZ</b><em>公网接入</em><strong data-probe data-min="79" data-max="86">正常 | 82%</strong>
+        </div>
+        <div class="probe probe-app">
+          <span class="probe-pin"></span>
+          <b>#APP</b><em>业务链路</em><strong data-probe data-min="72" data-max="80">正常 | 76%</strong>
+        </div>
+        <div class="probe probe-gis">
+          <span class="probe-pin"></span>
+          <b>#GIS</b><em>地理服务</em><strong data-probe data-min="68" data-max="75">正常 | 71%</strong>
+        </div>
+        <div class="probe probe-ops">
+          <span class="probe-pin"></span>
+          <b>#OPS</b><em>监控链路</em><strong data-probe data-min="65" data-max="72">正常 | 68%</strong>
+        </div>
+      </section>
+
+      <div class="route-legend" aria-label="拓扑图例">
+        <span><i class="leg-normal"></i>分区链路</span>
+        <span><i class="leg-attack-path"></i>攻击路径</span>
+        <span><i class="leg-hit"></i>攻击节点</span>
+        <span>
+          <svg class="leg-safe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+          </svg>
+          安全防护
+        </span>
+      </div>
+
+      <aside class="right-column" aria-label="测评、对抗与 Agent 能力态势">
+        <section class="hud-panel task-panel">
+          <h2>测评任务状态</h2>
+          <div class="task-body">
+            <div class="donut" style="--done: 80">
+              <strong data-number="527" data-min="515" data-max="540">527</strong>
+              <small>总任务</small>
+            </div>
+            <ul class="task-list">
+              <li><i class="blue-dot"></i>运行中 <b data-number="87" data-min="82" data-max="94">87</b></li>
+              <li><i class="orange-dot"></i>排队中 <b data-number="23" data-min="18" data-max="29">23</b></li>
+              <li><i class="cyan-dot"></i>已完成 <b data-number="417" data-min="409" data-max="426">417</b></li>
+              <li><i class="line-dot"></i>完成进度 <b data-percent="79.7" data-min="78.5" data-max="81.2">79.7%</b></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="hud-panel duel-panel">
+          <h2>红蓝实时对抗 <span>第2轮</span></h2>
+          <div class="duel-score">
+            <div class="red-team">红队 <b>12</b><i></i></div>
+            <div class="blue-team">蓝队 <b>7</b><i></i></div>
+          </div>
+          <div class="duel-meta">
+            <span>攻击成功 <b><em>13</em>/15</b></span>
+            <span>攻防矩阵 <b>47</b></span>
+            <span>平均得分 <b>52 min</b></span>
+          </div>
+        </section>
+
+        <section class="hud-panel run-panel" hidden>
+          <h2>Run 对比与标量趋势 <span>TM-02 / TM-03</span></h2>
+          <table>
+            <thead>
+              <tr><th>Run</th><th>Loss</th><th>Reward</th><th>成功率</th><th>时延</th><th>LR</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Run-0833</td><td data-decimal="3" data-min="0.174" data-max="0.194">0.184</td><td data-decimal="3" data-min="0.851" data-max="0.876">0.862</td><td data-percent="79.1" data-min="77.8" data-max="80.4">79.1%</td><td>-4.6s</td><td>3.8e-4</td></tr>
+              <tr><td>Run-0827</td><td data-decimal="3" data-min="0.221" data-max="0.238">0.231</td><td data-decimal="3" data-min="0.713" data-max="0.735">0.721</td><td data-percent="72.2" data-min="71.0" data-max="73.5">72.2%</td><td>-2.4s</td><td>3.2e-4</td></tr>
+              <tr><td>Run-0819</td><td data-decimal="3" data-min="0.288" data-max="0.304">0.296</td><td data-decimal="3" data-min="0.603" data-max="0.622">0.614</td><td data-percent="61.8" data-min="60.5" data-max="63.0">61.8%</td><td>-4.2s</td><td>2.7e-4</td></tr>
+            </tbody>
+          </table>
+          <div class="spark-row">
+            <figure>
+              <figcaption>Loss</figcaption>
+              <svg data-spark="loss" viewBox="0 0 92 42" preserveAspectRatio="none">
+                <g class="spark-grid"><line x1="8" y1="29" x2="88" y2="29" /><line x1="8" y1="8" x2="8" y2="29" /><line x1="48" y1="8" x2="48" y2="29" /><line x1="88" y1="8" x2="88" y2="29" /><text x="8" y="39">0</text><text x="48" y="39">60</text><text x="88" y="39">120</text></g>
+                <polyline class="spark-reference" />
+                <polyline class="spark-main" />
+              </svg>
+            </figure>
+            <figure>
+              <figcaption>Reward</figcaption>
+              <svg data-spark="reward" viewBox="0 0 92 42" preserveAspectRatio="none">
+                <g class="spark-grid"><line x1="8" y1="29" x2="88" y2="29" /><line x1="8" y1="8" x2="8" y2="29" /><line x1="48" y1="8" x2="48" y2="29" /><line x1="88" y1="8" x2="88" y2="29" /><text x="8" y="39">0</text><text x="48" y="39">60</text><text x="88" y="39">120</text></g>
+                <polyline class="spark-reference" />
+                <polyline class="spark-main" />
+              </svg>
+            </figure>
+            <figure>
+              <figcaption>成功率</figcaption>
+              <svg data-spark="success" viewBox="0 0 92 42" preserveAspectRatio="none">
+                <g class="spark-grid"><line x1="8" y1="29" x2="88" y2="29" /><line x1="8" y1="8" x2="8" y2="29" /><line x1="48" y1="8" x2="48" y2="29" /><line x1="88" y1="8" x2="88" y2="29" /><text x="8" y="39">0</text><text x="48" y="39">60</text><text x="88" y="39">120</text></g>
+                <polyline class="spark-reference" />
+                <polyline class="spark-main" />
+              </svg>
+            </figure>
+            <figure>
+              <figcaption>时延</figcaption>
+              <svg data-spark="delay" viewBox="0 0 92 42" preserveAspectRatio="none">
+                <g class="spark-grid"><line x1="8" y1="29" x2="88" y2="29" /><line x1="8" y1="8" x2="8" y2="29" /><line x1="48" y1="8" x2="48" y2="29" /><line x1="88" y1="8" x2="88" y2="29" /><text x="8" y="39">0</text><text x="48" y="39">60</text><text x="88" y="39">120</text></g>
+                <polyline class="spark-reference" />
+                <polyline class="spark-main" />
+              </svg>
+            </figure>
+          </div>
+        </section>
+
+        <section class="hud-panel gpu-panel" hidden>
+          <h2>GPU 集群监控 <span>TM-04</span></h2>
+          <div class="gpu-grid">
+            <article><span>GPU-A01</span><b data-gpu data-min="88" data-max="94">92%</b><small>76°C | 9.80GB / 32GB</small><i style="width: 92%"></i></article>
+            <article><span>GPU-A02</span><b data-gpu data-min="82" data-max="89">87%</b><small>70°C | 10.90GB / 32GB</small><i style="width: 87%"></i></article>
+            <article><span>GPU-A03</span><b data-gpu data-min="59" data-max="67">64%</b><small>69°C | 6.06GB / 32GB</small><i style="width: 64%"></i></article>
+            <article><span>GPU-A04</span><b data-gpu data-min="34" data-max="42">38%</b><small>56°C | 4.96GB / 32GB</small><i style="width: 38%"></i></article>
+          </div>
+        </section>
+
+        <section class="hud-panel train-panel" hidden>
+          <h2>训练运行与控制 <span>RL-0833</span></h2>
+          <div class="train-top">
+            <span><small>当前任务</small><b>Run-0833</b></span>
+            <span><small>训练类型</small><b>对抗强化学习</b></span>
+            <span><small>运行状态</small><b class="status-green">运行中</b></span>
+          </div>
+          <div class="speed-row">
+            <small>速度</small>
+            <div class="meter"><i id="trainSpeed" style="width: 79.7%"></i></div>
+            <b data-percent="79.7" data-min="76.3" data-max="83.5">79.7%</b>
+          </div>
+          <div class="control-row" aria-label="训练控制">
+            <button>暂停</button>
+            <button class="ghost">恢复</button>
+            <button class="danger">停止</button>
+          </div>
+          <dl class="train-grid">
+            <div><dt>LR</dt><dd>2e-4</dd></div>
+            <div><dt>算法</dt><dd>Cosine</dd></div>
+            <div><dt>Warmup</dt><dd>5%</dd></div>
+            <div><dt>Epoch</dt><dd><b data-number="36" data-min="36" data-max="39">36</b>/120</dd></div>
+            <div><dt>Batch</dt><dd>64</dd></div>
+            <div><dt>并行</dt><dd>DDPx8</dd></div>
+            <div><dt>预计剩余</dt><dd id="remainTime">02:43:18</dd></div>
+            <div><dt>已运行</dt><dd id="runTime">01:16:42</dd></div>
+          </dl>
+          <div class="train-extra">
+            <article>
+              <h3>策略队列</h3>
+              <div class="train-line"><span>样本回放</span><em><i style="width: 86%"></i></em><b data-percent="86.0" data-min="82.0" data-max="89.0">86.0%</b></div>
+              <div class="train-line"><span>攻击重采样</span><em><i style="width: 64%"></i></em><b data-percent="64.0" data-min="59.0" data-max="69.0">64.0%</b></div>
+              <div class="train-line"><span>蓝队更新</span><em><i style="width: 72%"></i></em><b data-percent="72.0" data-min="68.0" data-max="77.0">72.0%</b></div>
+            </article>
+            <article>
+              <h3>资源同步</h3>
+              <div class="train-line"><span>梯度同步</span><em><i style="width: 100%"></i></em><b>8/8</b></div>
+              <div class="train-line"><span>样本缓存</span><em><i style="width: 78%"></i></em><b data-percent="78.0" data-min="74.0" data-max="83.0">78.0%</b></div>
+              <div class="train-line"><span>参数广播</span><em><i style="width: 91%"></i></em><b data-percent="91.0" data-min="87.0" data-max="95.0">91.0%</b></div>
+            </article>
+          </div>
+        </section>
+      </aside>
+
+      <section class="event-feed hud-panel" aria-label="实时攻防事件流">
+        <h2>实时攻防事件流 <span>WebSocket 实时推送</span></h2>
+        <ul id="eventFeed">
+          <li><b>[INFO]</b><time>14:47:41</time><span>公网接入区检测到 React 入口探测流量，峰值超出基线阈值</span></li>
+          <li><b class="err">[ERROR]</b><time>14:47:42</time><span>业务应用区 Dubbo 服务出现疑似远程调用利用痕迹</span></li>
+          <li><b class="warn">[WARN]</b><time>14:47:44</time><span>GIS 服务区 GeoServer 节点触发异常请求防护策略</span></li>
+          <li><b>[INFO]</b><time>14:47:46</time><span>监控数据区 Neo4j 图数据库连接策略已同步</span></li>
+        </ul>
+      </section>
+    </main>
+    <script src="./script.js?v=20260817-mini-stats-v1"></script>
+  </body>
+</html>

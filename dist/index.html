@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="网安攻防演练场本地前端重写版" />
+    <title>CYBERSEC RANGE · 网安攻防演练场</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app" class="app-shell is-dashboard is-booting">
+      <aside class="side-rail" aria-label="平台主导航">
+        <div class="brand-block">
+          <span class="brand-symbol" id="brand-symbol" aria-hidden="true"></span>
+          <div class="brand-name">
+            <strong>网安攻防演练场</strong>
+          </div>
+        </div>
+
+        <nav id="main-nav" class="side-nav"></nav>
+
+        <div class="account-block">
+          <button type="button" aria-label="当前用户 operator">
+            <span>OP</span>
+            <div><b>operator</b><small>系统管理员</small></div>
+          </button>
+        </div>
+      </aside>
+
+      <section class="workspace-shell">
+        <main id="page-root" class="page-root"></main>
+      </section>
+    </div>
+    <script src="data.js"></script>
+    <script src="pages.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
