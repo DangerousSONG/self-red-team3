@@ -464,9 +464,9 @@ const RangeData = {
     ["RedBot-X（客户侧 Agent）", "Agent", "https://agent.customer.lab/mcp", "未通过", "0", "—", "—", "—"],
   ],
   apiKeys: [
-    { id: "key-01", name: "评测接入密钥", prefix: "sk-air-7f2e", scope: "全部权限", quota: "3.2 / 50 万次", created: "2026-07-28 14:20", last: "10 分钟前", status: "active" },
-    { id: "key-02", name: "CI 流水线 · 夜间回归", prefix: "sk-air-09bc", scope: "评测提交 · 状态查询", quota: "12.6 / 50 万次", created: "2026-07-15 09:12", last: "昨天 23:41", status: "active" },
-    { id: "key-03", name: "外部审计 · 只读", prefix: "sk-air-41da", scope: "只读", quota: "0 / 50 万次", created: "2026-06-30 16:05", last: "21 天前", status: "revoked" },
+    { id: "key-01", name: "评测接入密钥", prefix: "demo-air-7f2e", scope: "全部权限", quota: "3.2 / 50 万次", created: "2026-07-28 14:20", last: "10 分钟前", status: "active" },
+    { id: "key-02", name: "CI 流水线 · 夜间回归", prefix: "demo-air-09bc", scope: "评测提交 · 状态查询", quota: "12.6 / 50 万次", created: "2026-07-15 09:12", last: "昨天 23:41", status: "active" },
+    { id: "key-03", name: "外部审计 · 只读", prefix: "demo-air-41da", scope: "只读", quota: "0 / 50 万次", created: "2026-06-30 16:05", last: "21 天前", status: "revoked" },
   ],
   sessions: [
     ["SES-20260805-21", "GLM-5.2（外部）", "2026-08-05 16:22", "SCN-02 电网 · 漏利评测", "完成 · 综合 94.2", "88"],
