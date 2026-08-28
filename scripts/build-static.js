@@ -10,52 +10,6 @@ const hostingDir = path.join(dist, ".openai");
 const staticFiles = ["index.html", "styles.css", "data.js", "pages.js", "app.js", "THIRD_PARTY_NOTICES.md"];
 const staticDirs = ["dashboard"];
 
-const worker = `function assetRequest(request, pathname) {
-  const url = new URL(request.url);
-  url.pathname = pathname;
-  url.search = "";
-  return new Request(url.toString(), request);
-}
-
-function withHeaders(response) {
-  const headers = new Headers(response.headers);
-  headers.set("X-Content-Type-Options", "nosniff");
-  headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-  if (!headers.has("Cache-Control")) headers.set("Cache-Control", "no-store");
-  return new Response(response.body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers,
-  });
-}
-
-export default {
-  async fetch(request, env) {
-    const method = request.method.toUpperCase();
-    if (method !== "GET" && method !== "HEAD") {
-      return new Response("Method Not Allowed", { status: 405 });
-    }
-
-    let pathname;
-    try {
-      pathname = decodeURIComponent(new URL(request.url).pathname);
-    } catch {
-      return new Response("Bad Request", { status: 400 });
-    }
-
-    if (!pathname || pathname === "/") pathname = "/index.html";
-
-    let response = await env.ASSETS.fetch(assetRequest(request, pathname));
-    const lastPart = pathname.split("/").pop() || "";
-    if (response.status === 404 && !lastPart.includes(".")) {
-      response = await env.ASSETS.fetch(assetRequest(request, "/index.html"));
-    }
-
-    return withHeaders(response);
-  },
-};
-`;
-
 fs.rmSync(dist, { recursive: true, force: true });
 fs.mkdirSync(serverDir, { recursive: true });
 fs.mkdirSync(hostingDir, { recursive: true });
@@ -84,4 +38,81 @@ for (const dir of staticDirs) {
 }
 
 fs.copyFileSync(path.join(root, ".openai", "hosting.json"), path.join(hostingDir, "hosting.json"));
+
+const textRoutes = {
+  "/index.html": { type: "text/html; charset=utf-8", file: "index.html" },
+  "/styles.css": { type: "text/css; charset=utf-8", file: "styles.css" },
+  "/data.js": { type: "text/javascript; charset=utf-8", file: "data.js" },
+  "/pages.js": { type: "text/javascript; charset=utf-8", file: "pages.js" },
+  "/app.js": { type: "text/javascript; charset=utf-8", file: "app.js" },
+  "/dashboard/index.html": { type: "text/html; charset=utf-8", file: "dashboard/index.html" },
+  "/dashboard/styles.css": { type: "text/css; charset=utf-8", file: "dashboard/styles.css" },
+  "/dashboard/script.js": { type: "text/javascript; charset=utf-8", file: "dashboard/script.js" },
+};
+
+const binaryRoutes = {
+  "/dashboard/assets/scene-map.png": { type: "image/png", file: "dashboard/assets/scene-map.png" },
+};
+
+const embeddedText = Object.fromEntries(Object.entries(textRoutes).map(([route, asset]) => [
+  route,
+  { type: asset.type, body: fs.readFileSync(path.join(root, asset.file), "utf8") },
+]));
+const embeddedBinary = Object.fromEntries(Object.entries(binaryRoutes).map(([route, asset]) => [
+  route,
+  { type: asset.type, body: fs.readFileSync(path.join(root, asset.file)).toString("base64") },
+]));
+
+const worker = `const textAssets = ${JSON.stringify(embeddedText)};
+const binaryAssets = ${JSON.stringify(embeddedBinary)};
+
+function securityHeaders(type) {
+  return {
+    "Content-Type": type,
+    "Cache-Control": "no-store",
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+  };
+}
+
+function base64ToBytes(value) {
+  const raw = atob(value);
+  const bytes = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i += 1) bytes[i] = raw.charCodeAt(i);
+  return bytes;
+}
+
+export default {
+  async fetch(request) {
+    const method = request.method.toUpperCase();
+    if (method !== "GET" && method !== "HEAD") {
+      return new Response("Method Not Allowed", { status: 405 });
+    }
+
+    let pathname;
+    try {
+      pathname = decodeURIComponent(new URL(request.url).pathname);
+    } catch {
+      return new Response("Bad Request", { status: 400 });
+    }
+
+    if (!pathname || pathname === "/") pathname = "/index.html";
+    if (pathname.endsWith("/")) pathname += "index.html";
+
+    const textAsset = textAssets[pathname];
+    if (textAsset) return new Response(method === "HEAD" ? null : textAsset.body, { headers: securityHeaders(textAsset.type) });
+
+    const binaryAsset = binaryAssets[pathname];
+    if (binaryAsset) return new Response(method === "HEAD" ? null : base64ToBytes(binaryAsset.body), { headers: securityHeaders(binaryAsset.type) });
+
+    const lastPart = pathname.split("/").pop() || "";
+    if (!lastPart.includes(".")) {
+      const fallback = textAssets["/index.html"];
+      return new Response(method === "HEAD" ? null : fallback.body, { headers: securityHeaders(fallback.type) });
+    }
+
+    return new Response("Not Found", { status: 404, headers: securityHeaders("text/plain; charset=utf-8") });
+  },
+};
+`;
 fs.writeFileSync(path.join(serverDir, "index.js"), worker, "utf8");
