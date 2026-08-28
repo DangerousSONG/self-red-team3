@@ -6,7 +6,7 @@ const RangePages = (() => {
   const state = {
     route: "tasks", root: null, taskFilter: null, taskQuery: "", taskPageIndex: 1, tasks: clone(D.taskQueue), reports: clone(D.reports),
     reviews: clone(D.reviewTickets), questions: clone(D.questionSets), training: clone(D.trainingTasks), keys: clone(D.apiKeys),
-    taskWizard: null, trainingWizard: null, trainingFilter: null, trainingQuery: "", trainingPageIndex: 1, modal: null, gatewayTab: "agents", verifyStep: 0, loginMode: "login", dataTraceId: "RB-20260805-021", dataTaskId: "JOB-20260805-021", dataOutputType: "trajectory", dataRegionId: "RG-077", dataMode: "overview", dataResourceTab: "ranges", dataAssetPageIndex: 1, dataAssetTypeFilter: "all", dataAssetPackageId: "", dataScriptName: "", dataEvidenceId: "", dataReportId: "", dataIngests: {},
+    taskWizard: null, trainingWizard: null, trainingFilter: null, trainingQuery: "", trainingPageIndex: 1, modal: null, gatewayTab: "agents", verifyStep: 0, loginMode: "login", dataTraceId: "RB-20260805-021", dataTaskId: "JOB-20260805-021", dataOutputType: "trajectory", dataRegionId: "RG-077", dataMode: "overview", dataResourceTab: "ranges", dataAssetPageIndex: 1, dataAssetTypeFilter: "all", dataAssetPackageId: "", dataAssetGuideType: "", dataScriptName: "", dataEvidenceId: "", dataReportId: "", dataIngests: {},
     reportReady: false, liveTrainingId: null,
   };
 
@@ -785,14 +785,18 @@ const RangePages = (() => {
     const pagedAssetPackages = assetPackages.slice((assetPageIndex - 1) * assetPageSize, assetPageIndex * assetPageSize);
     const runningTaskCount = state.tasks.filter((item) => item.status === "running").length;
     const queuedTaskCount = state.tasks.filter((item) => item.status === "queued").length;
+    const guidedAssetTypes = ["trajectory", "exp", "report", "evidence"];
+    const assetGuideType = guidedAssetTypes.includes(state.dataAssetGuideType) ? state.dataAssetGuideType : "";
+    const assetGuideLabel = assetGuideType ? (assetTypeLabels[assetGuideType] || "对应资产") : "";
+    const assetGuide = assetGuideType ? `<div class="asset-library-guide"><span>已定位到 ${esc(assetGuideLabel)}</span><b>请选择下方某一次演练任务进入</b><small>每一行代表一次演练；点对应资产可直接进入该任务的数据处理或只读预览。</small></div>` : "";
     const flowNodes = [
       { klass: "flow-input", step: "01 输入", title: "输入环境池", parts: [["Benchmark Docker 环境", "128 个"], ["网络靶场", "58 个"]], note: "两类靶场输入统一登记", action: "data-flow-node:ranges", cta: "查看环境" },
       { klass: "flow-task", step: "02 任务", title: "正在演练任务", value: `${runningTaskCount} 个`, note: `测试任务列表 · 排队 ${queuedTaskCount}`, action: "go-tasks-running", cta: "看任务" },
       { klass: "flow-raw", step: "03 暂存", title: "原始产物暂存", value: "12.5 万步", note: "未清洗 · 未复核 · 同源封存", action: "data-flow-node:raw", cta: "看暂存包" },
-      { klass: "flow-trace", step: "04A 轨迹", title: "轨迹片段治理", value: "7.7 万步", note: "自动标注 5.1 万 · 待人工 2.6 万", action: `data-flow-node:trajectory|${task.id}`, cta: "处理轨迹" },
-      { klass: "flow-exp", step: "04B EXP", title: "EXP 脚本复核", value: "1,050 个", note: "已复核 612 · 待复核 438", action: `data-flow-node:exp|${task.id}`, cta: "复核脚本" },
-      { klass: "flow-report", step: "04C 报告", title: "Agent 报告签名", value: "5 份", note: "Markdown 只读预览 · 待签名 3", action: `data-flow-node:report|${task.id}`, cta: "预览报告" },
-      { klass: "flow-evidence", step: "04D 证据", title: "证据日志封存", value: "2,144 条", note: "只读验签 · 已封存 1,248", action: `data-flow-node:evidence|${task.id}`, cta: "查看证据" },
+      { klass: "flow-trace", step: "04A 轨迹", title: "轨迹片段治理", value: "7.7 万步", note: "自动标注 5.1 万 · 待人工 2.6 万", action: "data-flow-node:trajectory", cta: "选择任务处理" },
+      { klass: "flow-exp", step: "04B EXP", title: "EXP 脚本复核", value: "1,050 个", note: "已复核 612 · 待复核 438", action: "data-flow-node:exp", cta: "选择任务复核" },
+      { klass: "flow-report", step: "04C 报告", title: "Agent 报告签名", value: "5 份", note: "Markdown 只读预览 · 待签名 3", action: "data-flow-node:report", cta: "选择任务预览" },
+      { klass: "flow-evidence", step: "04D 证据", title: "证据日志封存", value: "2,144 条", note: "只读验签 · 已封存 1,248", action: "data-flow-node:evidence", cta: "选择任务查看" },
       { klass: "flow-assets", step: "05 入库", title: "治理后资产库", value: "8,420 段", note: "已准入 · 可训练 / 可评测", action: "data-flow-node:assets", cta: "看资产库" },
       { klass: "flow-model", step: "06 反馈", title: "模型版本", value: task.modelVersion.uplift, note: `${task.modelVersion.current} · 指标反馈`, action: "go-models", cta: "看评测" },
     ];
@@ -847,7 +851,8 @@ const RangePages = (() => {
       const outputs = item.outputs || [];
       const assets = outputs.map((asset) => {
         const displayStatus = dataDisplayStatus(item, asset);
-        return `<button type="button" class="task-asset-chip asset-${esc(asset.type)}" data-action="${item.mock ? `data-mock-asset:${item.id}|${asset.type}` : `data-home-output:${item.id}|${asset.type}`}">
+        const guidedClass = assetGuideType === asset.type ? " is-guided" : "";
+        return `<button type="button" class="task-asset-chip asset-${esc(asset.type)}${guidedClass}" data-action="${item.mock ? `data-mock-asset:${item.id}|${asset.type}` : `data-home-output:${item.id}|${asset.type}`}">
           <span>${esc(assetTypeLabels[asset.type] || asset.label)}</span>
           <b>${esc(asset.count)}</b>
           ${badge(displayStatus, dataTone(displayStatus))}
@@ -975,8 +980,9 @@ const RangePages = (() => {
         ${sectionHead("数据回流主链路", "一张图看完输入、产物、准入和反馈", button("查看版本评测", "go-models", "secondary"))}
         ${flywheelVisual}
       </section>
-      <section class="content-card task-asset-library">
+      <section id="exercise-asset-library" class="content-card task-asset-library ${assetGuideType ? "is-guided" : ""}">
         ${sectionHead("演练资产库", "分页列表 · 按一次演练聚合，可看到未处理、待复核和已准入状态")}
+        ${assetGuide}
         <div class="asset-package-list">
           ${assetPackageRows}
         </div>
@@ -1522,6 +1528,17 @@ const RangePages = (() => {
   function toast(message, tone="success") { document.querySelector(".app-toast")?.remove(); const el=document.createElement("div"); el.className=`app-toast toast-${tone}`; el.textContent=message; document.body.appendChild(el); requestAnimationFrame(()=>el.classList.add("show")); setTimeout(()=>{el.classList.remove("show");setTimeout(()=>el.remove(),180);},2200); }
   function download(name,payload){const url=URL.createObjectURL(new Blob([typeof payload==="string"?payload:JSON.stringify(payload,null,2)],{type:"application/json;charset=utf-8"}));const a=document.createElement("a");a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),0);}
   function rerender(){render(state.route,state.root);}
+  function focusDataAssetLibrary(type){
+    const labels = { trajectory: "轨迹", exp: "EXP", report: "报告", evidence: "证据" };
+    state.dataMode="overview";
+    state.dataAssetGuideType=type;
+    state.dataAssetPageIndex=1;
+    rerender();
+    requestAnimationFrame(() => {
+      state.root?.querySelector("#exercise-asset-library")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    toast(`请在演练资产库选择一次任务查看${labels[type] || "对应资产"}`);
+  }
   function closeModal(){
     stopLiveTraining();
     state.modal=null;state.taskWizard=null;state.trainingWizard=null;state.liveTrainingId=null;
@@ -1587,7 +1604,7 @@ const RangePages = (() => {
       if(target==="ranges"||target==="raw"){state.dataResourceTab=target;state.dataMode="resources";toast(target==="ranges"?"已下钻至靶场环境池":"已下钻至原始产物暂存");return rerender();}
       if(target==="assets"){state.dataResourceTab="assets";state.dataAssetTypeFilter="all";state.dataAssetPackageId=state.dataTaskId;state.dataMode="resources";toast("已下钻至高价值资产库");return rerender();}
       if(target==="task"){state.dataMode="flow";state.dataOutputType="trajectory";state.dataRegionId=null;state.dataScriptName="";state.dataEvidenceId="";state.dataReportId="";toast("已打开当前演练资产包");return rerender();}
-      if(["trajectory","exp","report","evidence"].includes(target)){state.dataMode="flow";state.dataOutputType=target;state.dataRegionId=null;state.dataScriptName="";state.dataEvidenceId="";state.dataReportId="";toast(target==="trajectory"?"已进入轨迹片段处理":target==="exp"?"已进入 EXP 脚本复核":target==="report"?"已进入 Agent 报告预览":"已进入证据日志预览");return rerender();}
+      if(["trajectory","exp","report","evidence"].includes(target)){return focusDataAssetLibrary(target);}
     }
     if(name==="go-tasks-running"){state.taskFilter="running";state.taskPageIndex=1;location.hash="#/tasks";return;}
     if(name==="go-models"){location.hash="#/models";return;}

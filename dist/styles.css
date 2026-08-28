@@ -847,7 +847,11 @@ td > small { color: var(--quiet); font-size: 12px; line-height: 1.55; }
 .loop-node b{align-self:center;color:var(--text);font-size:13px;font-weight:650}
 .loop-node strong{grid-column:1/-1;color:var(--muted);font-size:13px;font-weight:650;line-height:1.35}
 .loop-node small{grid-column:1/-1;color:var(--quiet);font-size:12px;line-height:1.45}
-.task-asset-library{display:grid;gap:14px}
+.task-asset-library{display:grid;gap:14px;scroll-margin-top:16px}
+.asset-library-guide{display:flex;align-items:center;gap:10px;min-height:38px;padding:8px 11px;border:1px solid rgba(142,203,255,.24);background:rgba(142,203,255,.045)}
+.asset-library-guide span{color:var(--primary);font-size:12px}
+.asset-library-guide b{font-size:13px;font-weight:600}
+.asset-library-guide small{color:var(--muted);font-size:12px}
 .asset-package-list{display:grid;gap:8px;overflow:auto;padding-bottom:2px}
 .asset-package-row{display:grid;grid-template-columns:minmax(220px,1.2fr) minmax(160px,.85fr) minmax(380px,1.65fr) minmax(130px,.7fr) minmax(170px,.85fr) 120px;min-width:1120px;border:1px solid rgba(89,190,222,.2);background:rgba(39,79,97,.42)}
 .asset-package-row:hover{border-color:rgba(142,203,255,.45);background:rgba(39,79,97,.55)}
@@ -860,6 +864,7 @@ td > small { color: var(--quiet); font-size: 12px; line-height: 1.55; }
 .asset-output-cell{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .task-asset-chip{display:grid;align-content:start;gap:5px;min-width:0;min-height:80px;padding:9px;color:var(--muted);border:1px solid rgba(89,190,222,.18);border-left:3px solid rgba(109,239,255,.45);background:rgba(6,19,30,.72);text-align:left;cursor:pointer}
 .task-asset-chip:hover{border-color:rgba(142,203,255,.62);background:rgba(142,203,255,.06)}
+.task-asset-chip.is-guided{border-color:rgba(142,203,255,.72);background:rgba(142,203,255,.08);box-shadow:inset 0 0 0 1px rgba(142,203,255,.22)}
 .task-asset-chip span{color:var(--quiet);font-size:12px}
 .task-asset-chip b{color:var(--text);font-size:13px;font-weight:650;overflow-wrap:anywhere}
 .task-asset-chip.asset-exp{border-left-color:rgba(255,210,103,.7)}
