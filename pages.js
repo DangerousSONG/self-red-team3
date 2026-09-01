@@ -372,17 +372,17 @@ const RangePages = (() => {
         <div>
           <span class="mono">${esc(sample.id)}</span>
           <h3>${esc(sample.name)}</h3>
-          <p>该样本属于 Benchmark Docker 环境池，用于评测任务创建、Agent 演练和模型回归。详情页只展示目录与配置预览，重建动作会重新生成镜像、判分规则和快照基线。</p>
+          <p>该样本属于 Benchmark Docker 环境池，用于评测任务创建、Agent 演练和模型回归。详情页只展示目录与配置预览，便于确认镜像、判分规则和快照基线。</p>
           <div class="sandbox-preview-badges">${badge(sample.type, "info")}<span class="difficulty-chip level-${esc(sample.difficulty.toLowerCase())}">${esc(sample.difficulty)}</span>${sampleStatusBadge(sample.status)}</div>
         </div>
-        ${detailList([["质量分", `<strong class="quality-score">${esc(sample.score)}</strong>`], ["来源", esc(sample.source)], ["构建方式", esc(sample.build)], ["任务目标", esc(sample.target)], ["判分方式", esc(sample.scoring)]])}
+        ${detailList([["来源", esc(sample.source)], ["构建方式", esc(sample.build)], ["任务目标", esc(sample.target)], ["判分方式", esc(sample.scoring)]])}
       </section>
       <section class="range-env-files">
         <article><h3>Docker 目录</h3><pre><code>${esc(tree)}</code></pre></article>
         <article><h3>compose 预览</h3><pre><code>${esc(sample.code)}</code></pre></article>
       </section>
     </div>`;
-    state.modal = modal("漏洞沙箱样本详情", `${sample.id} · ${sample.name}`, body, `${button("关闭", "close-modal", "secondary")}${button("加入重建队列", `sandbox-rebuild:${sample.id}`, "primary")}`, "xwide");
+    state.modal = modal("漏洞沙箱样本详情", `${sample.id} · ${sample.name}`, body, `${button("关闭", "close-modal", "secondary")}${button("用该环境创建任务", "go-range-hall", "primary")}`, "xwide");
     rerender();
   }
 
@@ -879,10 +879,9 @@ const RangePages = (() => {
       <td><strong>${esc(sample.name)}</strong><small>${esc(sample.source)} · ${esc(sample.target)}</small></td>
       <td>${esc(sample.type)}</td>
       <td><span class="difficulty-chip level-${esc(sample.difficulty.toLowerCase())}">${esc(sample.difficulty)}</span></td>
-      <td><strong class="quality-score">${esc(sample.score)}</strong></td>
       <td>${sampleStatusBadge(sample.status)}</td>
-      <td class="range-row-actions sample-row-actions">${iconButton(`查看 ${sample.id} Docker 目录`, `range-vuln-preview:${sample.id}`)}<button type="button" class="table-text-btn" data-action="sandbox-rebuild:${sample.id}">重建</button></td>
-    </tr>`).join("") || `<tr><td colspan="7" class="table-empty">当前筛选下暂无样本</td></tr>`;
+      <td class="range-row-actions sample-row-actions">${iconButton(`查看 ${sample.id} Docker 目录`, `range-vuln-preview:${sample.id}`)}</td>
+    </tr>`).join("") || `<tr><td colspan="6" class="table-empty">当前筛选下暂无样本</td></tr>`;
     const sandboxPagination = `<div class="sandbox-ledger-footer">
       <p>共 ${filteredSandboxSamples.length} 条 · 第 ${sandboxPageIndex}/${sandboxTotalPages} 页（全库 5,000 条，此处展示示例集）</p>
       <nav aria-label="漏洞沙箱样本台账分页">${Array.from({ length: sandboxTotalPages }, (_, index) => {
@@ -900,7 +899,7 @@ const RangePages = (() => {
           <label><span>⌕</span><input data-input="sandbox-query" value="${esc(state.dataSandboxQuery)}" placeholder="搜索 CVE / 名称..." aria-label="搜索漏洞样本"></label>
         </div>
       </header>
-      ${table(["CVE 编号","漏洞名称","类型","难度","质量分","状态","操作"], sandboxRows, "range-pool-table sandbox-ledger-table")}
+      ${table(["CVE 编号","漏洞名称","类型","难度","状态","操作"], sandboxRows, "range-pool-table sandbox-ledger-table")}
       ${sandboxPagination}
     </section>`;
     const networkRangeList = `<section class="range-pool-list">
@@ -1729,7 +1728,6 @@ const RangePages = (() => {
     if(name==="data-resource-tab"){state.dataResourceTab=node.dataset.value;return rerender();}
     if(name==="sandbox-ledger-page"){state.dataSandboxPageIndex=Number(node.dataset.value)||1;return rerender();}
     if(name==="range-vuln-preview")return vulnerabilitySamplePreviewModal(id);
-    if(name==="sandbox-rebuild"){toast(`${id} 已加入沙箱重建队列`);return;}
     if(name==="range-env-preview")return rangeEnvironmentPreviewModal(id);
     if(name==="data-asset-type-filter"){state.dataAssetTypeFilter=node.dataset.value;state.dataAssetPackageId="";return rerender();}
     if(name==="data-asset-page"){state.dataAssetPageIndex=Number(node.dataset.value)||1;return rerender();}
