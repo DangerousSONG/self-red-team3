@@ -6,7 +6,7 @@ const RangePages = (() => {
   const state = {
     route: "tasks", root: null, taskFilter: null, taskQuery: "", taskPageIndex: 1, tasks: clone(D.taskQueue), reports: clone(D.reports),
     reviews: clone(D.reviewTickets), questions: clone(D.questionSets), training: clone(D.trainingTasks), keys: clone(D.apiKeys),
-    taskWizard: null, trainingWizard: null, trainingFilter: null, trainingQuery: "", trainingPageIndex: 1, modal: null, gatewayTab: "agents", verifyStep: 0, loginMode: "login", dataTraceId: "RB-20260805-021", dataTaskId: "JOB-20260805-021", dataOutputType: "trajectory", dataRegionId: "RG-077", dataMode: "overview", dataResourceTab: "ranges", dataAssetPageIndex: 1, dataAssetTypeFilter: "all", dataAssetPackageId: "", dataAssetGuideType: "", dataScriptName: "", dataEvidenceId: "", dataReportId: "", dataIngests: {},
+    taskWizard: null, trainingWizard: null, trainingFilter: null, trainingQuery: "", trainingPageIndex: 1, modal: null, gatewayTab: "agents", verifyStep: 0, loginMode: "login", dataTraceId: "RB-20260805-021", dataTaskId: "JOB-20260805-021", dataOutputType: "trajectory", dataRegionId: "RG-077", dataMode: "overview", dataResourceTab: "ranges", dataSandboxTypeFilter: "all", dataSandboxDifficultyFilter: "all", dataSandboxStatusFilter: "all", dataSandboxQuery: "", dataSandboxPageIndex: 1, dataAssetPageIndex: 1, dataAssetTypeFilter: "all", dataAssetPackageId: "", dataAssetGuideType: "", dataScriptName: "", dataEvidenceId: "", dataReportId: "", dataIngests: {},
     reportReady: false, liveTrainingId: null,
   };
 
@@ -14,6 +14,39 @@ const RangePages = (() => {
   const badge = (text, tone = "neutral") => `<span class="badge badge-${tone}">${esc(text)}</span>`;
   const button = (text, action, tone = "secondary", attrs = "") => `<button type="button" class="btn btn-${tone}" data-action="${action}" ${attrs}>${text}</button>`;
   const iconButton = (label, action, attrs = "") => `<button type="button" class="icon-btn table-icon-btn" data-action="${action}" aria-label="${esc(label)}" title="${esc(label)}" ${attrs}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.06 12.35C3.9 7.98 7.28 5.8 12 5.8s8.1 2.18 9.94 6.55C20.1 16.72 16.72 18.9 12 18.9S3.9 16.72 2.06 12.35Z"></path><circle cx="12" cy="12.35" r="3"></circle></svg></button>`;
+  const vulnerabilitySandboxSamples = [
+    ["CVE-2024-21626", "runC 容器逃逸（Leaky Vessels）", "容器/云原生", "T2", 96, "已发布", "Benchmark 场景模板", "Docker Compose + runtime 逃逸沙箱", "容器逃逸 / 主机读取", "Flag + 快照比对"],
+    ["CVE-2024-6387", "OpenSSH regreSSHion 信号竞争 RCE", "协议/中间件", "T2", 93, "验证中", "公开基准改造", "单服务容器 + 延迟触发", "远程代码执行", "服务状态 + 终端回显"],
+    ["CVE-2021-44228", "Apache Log4j2 JNDI 注入 RCE", "Web应用", "T4", 91, "已发布", "公开基准改造", "Java Web 服务 + LDAP 回连", "JNDI 注入链", "Flag + 外联证据"],
+    ["CVE-2023-34362", "MOVEit Transfer SQL 注入", "Web应用", "T3", 89, "已发布", "自建业务复刻", "文件传输服务 + 数据库", "SQL 注入 / 数据读取", "数据库快照 + 日志"],
+    ["CVE-2024-3094", "XZ Utils 后门（liblzma）", "二进制", "T1", 97, "已发布", "供应链基准", "构建镜像 + 包管理沙箱", "供应链后门识别", "构建日志 + 单测结果"],
+    ["CVE-2023-4863", "libwebp 堆溢出 0day", "二进制", "T2", 88, "已发布", "公开基准改造", "图片解析服务容器", "堆溢出触发", "崩溃证据 + 回放"],
+    ["CVE-2024-3400", "PAN-OS GlobalProtect 命令注入", "协议/中间件", "T3", 90, "已发布", "协议仿真场景", "网关服务 + 命令审计", "命令注入", "日志证据 + 文件落点"],
+    ["CVE-2022-0847", "Linux Dirty Pipe 内核提权", "内核", "T3", 92, "已发布", "内核回归基准", "特权容器 + 内核版本锁定", "本地提权", "权限状态 + 回放"],
+    ["CVE-2023-4911", "glibc Looney Tunables 提权", "二进制", "T2", 87, "已发布", "公开基准改造", "系统组件沙箱", "本地提权", "权限状态 + 终端回显"],
+    ["CVE-2023-3519", "Citrix ADC 代码执行", "协议/中间件", "T3", 85, "验证中", "协议仿真场景", "ADC 网关服务容器", "远程代码执行", "服务日志 + 快照"],
+    ["CVE-2020-1472", "Zerologon 域控提权", "协议/中间件", "T3", 94, "已发布", "网络服务基准", "AD 协议服务 + 判分桩", "域控提权", "认证日志 + 里程碑"],
+    ["CVE-2019-19781", "Citrix ADC 路径穿越", "Web应用", "T3", 86, "已发布", "公开基准改造", "Web 网关容器", "路径穿越 / 文件读取", "文件命中 + 日志"],
+    ["CVE-2021-26855", "Exchange ProxyLogon SSRF", "协议/中间件", "T3", 90, "已发布", "邮件系统仿真", "Exchange 接口模拟 + 邮箱数据", "SSRF / 邮箱读取", "请求链 + 快照"],
+    ["CVE-2021-3156", "sudo Baron Samedit 提权", "二进制", "T2", 92, "已发布", "系统组件基准", "Linux 用户态沙箱", "本地提权", "权限状态 + 终端回显"],
+    ["CVE-2022-1388", "F5 BIG-IP iControl REST RCE", "协议/中间件", "T2", 89, "验证中", "协议仿真场景", "REST 控制面模拟", "认证绕过 / RCE", "API 日志 + Flag"],
+    ["CVE-2017-5638", "Apache Struts2 Jakarta RCE", "Web应用", "T2", 88, "已发布", "公开基准改造", "Java Web 服务容器", "OGNL 表达式执行", "Flag + 请求回放"],
+    ["CVE-2023-22515", "Confluence 权限绕过", "Web应用", "T2", 84, "重建中", "业务复刻场景", "协同系统容器", "权限绕过 / 管理员创建", "审计日志 + 状态"],
+    ["CVE-2020-0796", "SMBGhost 压缩协议漏洞", "协议/中间件", "T4", 82, "已发布", "协议仿真场景", "SMB 服务容器 + 流量回放", "协议漏洞利用", "流量证据 + 服务状态"],
+    ["CVE-2022-22965", "Spring4Shell 参数绑定 RCE", "Web应用", "T2", 91, "已发布", "公开基准改造", "Spring 应用容器", "参数绑定 / RCE", "Flag + Web 日志"],
+    ["CVE-2021-4034", "Polkit pkexec 本地提权", "二进制", "T2", 90, "已发布", "系统组件基准", "Linux 用户态沙箱", "本地提权", "权限状态 + 回放"],
+    ["CVE-2023-27997", "Fortinet SSL-VPN 堆溢出", "协议/中间件", "T3", 86, "验证中", "VPN 网关仿真", "VPN 服务 + 流量采集", "堆溢出 / 命令执行", "流量证据 + 崩溃日志"],
+    ["CVE-2021-21972", "VMware vCenter 插件 RCE", "协议/中间件", "T3", 88, "已发布", "虚拟化平台基准", "vCenter API 模拟", "插件接口 RCE", "API 日志 + Flag"],
+    ["CVE-2018-13379", "Fortinet 任意文件读取", "协议/中间件", "T2", 84, "已发布", "VPN 网关仿真", "文件服务 + 会话样本", "敏感文件读取", "文件命中 + 日志"],
+    ["CVE-2022-30190", "Follina MSDT 代码执行", "Web应用", "T3", 83, "重建中", "客户端场景复刻", "文档解析服务沙箱", "代码执行 / 回连验证", "回连日志 + 快照"],
+  ].map(([id, name, type, difficulty, score, statusText, source, build, target, scoring]) => ({
+    id, name, type, difficulty, score, status: statusText, source, build, target, scoring,
+    path: `/ranges/benchmark/${id.toLowerCase()}`,
+    files: ["docker-compose.yml", "target/Dockerfile", "target/app/", "scoring/rules.yaml", "evidence/collectors.yaml", "README.md"],
+    code: `services:\n  target:\n    build: ./target\n    environment:\n      SAMPLE_ID: ${id}\n    networks: [sandbox]\n  judge:\n    image: range/judge:stable\n    volumes:\n      - ./scoring:/scoring:ro\nnetworks:\n  sandbox:`,
+  }));
+  const sandboxStatusTone = (value = "") => value === "已发布" ? "success" : value === "验证中" ? "info" : "warning";
+  const sampleStatusBadge = (value) => badge(value, sandboxStatusTone(value));
   const dataAssetReadyPattern = /已入库|已复核|已封存|已签名|通过|可复现/;
   const dataIngestKey = (taskId, type) => `${taskId}|${type}`;
   const isDataAssetReady = (asset = {}) => dataAssetReadyPattern.test(asset.status || "");
@@ -286,6 +319,29 @@ const RangePages = (() => {
       </section>
     </div>`;
     state.modal = modal("靶场环境详情", `${id} · ${item.title}`, body, `${button("关闭", "close-modal", "secondary")}${button("用该环境创建任务", "new-task", "primary")}`, "xwide");
+    rerender();
+  }
+
+  function vulnerabilitySamplePreviewModal(id) {
+    const sample = vulnerabilitySandboxSamples.find((item) => item.id === id);
+    if (!sample) return toast("暂无漏洞沙箱样本详情", "warning");
+    const tree = [`${sample.path}/`, ...sample.files.map((file) => `  ${file}`)].join("\n");
+    const body = `<div class="range-env-preview sandbox-preview">
+      <section class="range-env-summary">
+        <div>
+          <span class="mono">${esc(sample.id)}</span>
+          <h3>${esc(sample.name)}</h3>
+          <p>该样本属于 Benchmark Docker 环境池，用于评测任务创建、Agent 演练和模型回归。详情页只展示目录与配置预览，重建动作会重新生成镜像、判分规则和快照基线。</p>
+          <div class="sandbox-preview-badges">${badge(sample.type, "info")}<span class="difficulty-chip level-${esc(sample.difficulty.toLowerCase())}">${esc(sample.difficulty)}</span>${sampleStatusBadge(sample.status)}</div>
+        </div>
+        ${detailList([["质量分", `<strong class="quality-score">${esc(sample.score)}</strong>`], ["来源", esc(sample.source)], ["构建方式", esc(sample.build)], ["任务目标", esc(sample.target)], ["判分方式", esc(sample.scoring)]])}
+      </section>
+      <section class="range-env-files">
+        <article><h3>Docker 目录</h3><pre><code>${esc(tree)}</code></pre></article>
+        <article><h3>compose 预览</h3><pre><code>${esc(sample.code)}</code></pre></article>
+      </section>
+    </div>`;
+    state.modal = modal("漏洞沙箱样本详情", `${sample.id} · ${sample.name}`, body, `${button("关闭", "close-modal", "secondary")}${button("加入重建队列", `sandbox-rebuild:${sample.id}`, "primary")}`, "xwide");
     rerender();
   }
 
@@ -759,6 +815,57 @@ const RangePages = (() => {
         ],
       },
     ];
+    const dockerPool = rangePools[0];
+    const networkPool = rangePools[1];
+    const sandboxTypeOptions = ["all", ...new Set(vulnerabilitySandboxSamples.map((sample) => sample.type))];
+    const sandboxDifficultyOptions = ["all", "T1", "T2", "T3", "T4"];
+    const sandboxStatusOptions = ["all", ...new Set(vulnerabilitySandboxSamples.map((sample) => sample.status))];
+    const selectOptions = (items, current, allLabel) => items.map((item) => `<option value="${esc(item)}" ${item === current ? "selected" : ""}>${esc(item === "all" ? allLabel : item)}</option>`).join("");
+    const sandboxQuery = (state.dataSandboxQuery || "").trim().toLowerCase();
+    const filteredSandboxSamples = vulnerabilitySandboxSamples.filter((sample) =>
+      (state.dataSandboxTypeFilter === "all" || sample.type === state.dataSandboxTypeFilter) &&
+      (state.dataSandboxDifficultyFilter === "all" || sample.difficulty === state.dataSandboxDifficultyFilter) &&
+      (state.dataSandboxStatusFilter === "all" || sample.status === state.dataSandboxStatusFilter) &&
+      (!sandboxQuery || `${sample.id}${sample.name}${sample.type}${sample.source}${sample.target}`.toLowerCase().includes(sandboxQuery))
+    );
+    const sandboxPageSize = 8;
+    const sandboxTotalPages = Math.max(1, Math.ceil(filteredSandboxSamples.length / sandboxPageSize));
+    state.dataSandboxPageIndex = Math.min(Math.max(Number(state.dataSandboxPageIndex) || 1, 1), sandboxTotalPages);
+    const sandboxPageIndex = state.dataSandboxPageIndex;
+    const visibleSandboxSamples = filteredSandboxSamples.slice((sandboxPageIndex - 1) * sandboxPageSize, sandboxPageIndex * sandboxPageSize);
+    const sandboxRows = visibleSandboxSamples.map((sample) => `<tr>
+      <td class="mono sample-cve">${esc(sample.id)}</td>
+      <td><strong>${esc(sample.name)}</strong><small>${esc(sample.source)} · ${esc(sample.target)}</small></td>
+      <td>${esc(sample.type)}</td>
+      <td><span class="difficulty-chip level-${esc(sample.difficulty.toLowerCase())}">${esc(sample.difficulty)}</span></td>
+      <td><strong class="quality-score">${esc(sample.score)}</strong></td>
+      <td>${sampleStatusBadge(sample.status)}</td>
+      <td class="range-row-actions sample-row-actions">${iconButton(`查看 ${sample.id} Docker 目录`, `range-vuln-preview:${sample.id}`)}<button type="button" class="table-text-btn" data-action="sandbox-rebuild:${sample.id}">重建</button></td>
+    </tr>`).join("") || `<tr><td colspan="7" class="table-empty">当前筛选下暂无样本</td></tr>`;
+    const sandboxPagination = `<div class="sandbox-ledger-footer">
+      <p>共 ${filteredSandboxSamples.length} 条 · 第 ${sandboxPageIndex}/${sandboxTotalPages} 页（全库 5,000 条，此处展示示例集）</p>
+      <nav aria-label="漏洞沙箱样本台账分页">${Array.from({ length: sandboxTotalPages }, (_, index) => {
+        const page = index + 1;
+        return `<button type="button" class="${page === sandboxPageIndex ? "active" : ""}" data-action="sandbox-ledger-page" data-value="${page}" ${page === sandboxPageIndex ? 'aria-current="page"' : ""}>${page}</button>`;
+      }).join("")}</nav>
+    </div>`;
+    const sandboxLedger = `<section class="range-pool-list sandbox-ledger">
+      <header class="sandbox-ledger-head">
+        <div><h3>漏洞沙箱样本台账</h3><p>${esc(dockerPool.label)} · ${esc(dockerPool.count)} · 按 CVE 维护可复现样本，详情中可预览 Docker 目录和判分配置。</p></div>
+        <div class="sandbox-ledger-toolbar">
+          <select data-sandbox-filter="dataSandboxTypeFilter" aria-label="筛选漏洞类型">${selectOptions(sandboxTypeOptions, state.dataSandboxTypeFilter, "全部类型")}</select>
+          <select data-sandbox-filter="dataSandboxDifficultyFilter" aria-label="筛选难度">${selectOptions(sandboxDifficultyOptions, state.dataSandboxDifficultyFilter, "全部难度")}</select>
+          <select data-sandbox-filter="dataSandboxStatusFilter" aria-label="筛选状态">${selectOptions(sandboxStatusOptions, state.dataSandboxStatusFilter, "全部状态")}</select>
+          <label><span>⌕</span><input data-input="sandbox-query" value="${esc(state.dataSandboxQuery)}" placeholder="搜索 CVE / 名称..." aria-label="搜索漏洞样本"></label>
+        </div>
+      </header>
+      ${table(["CVE 编号","漏洞名称","类型","难度","质量分","状态","操作"], sandboxRows, "range-pool-table sandbox-ledger-table")}
+      ${sandboxPagination}
+    </section>`;
+    const networkRangeList = `<section class="range-pool-list">
+      <h3>${esc(networkPool.label)}</h3>
+      ${table(["环境编号","环境名称","来源","构建方式","任务目标","判分方式",""], networkPool.rows.map((r) => `<tr><td class="mono">${esc(r[0])}</td><td><strong>${esc(r[1])}</strong></td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td><td>${esc(r[5])}</td><td class="range-row-actions">${iconButton(`查看 ${r[1]} 详情`, `range-env-preview:${r[0]}`)}</td></tr>`).join(""), "range-pool-table")}
+    </section>`;
     const rangePoolView = `<div class="range-pool-view">
       <div class="asset-library-head">
         <div><span>输入环境池</span><b>按承载形态分为两类靶场输入</b><small>任务创建时统一称为靶场环境；进入资料池后拆成 Benchmark Docker 环境和网络靶场，便于分别维护镜像、拓扑、判分和回放规则。</small></div>
@@ -771,12 +878,7 @@ const RangePages = (() => {
           <footer>${button("创建任务", "new-task", "primary")}</footer>
         </article>`).join("")}
       </div>
-      <div class="range-pool-lists">
-        ${rangePools.map((pool) => `<section class="range-pool-list">
-          <h3>${esc(pool.label)}</h3>
-          ${table(["环境编号","环境名称","来源","构建方式","任务目标","判分方式",""], pool.rows.map((r) => `<tr><td class="mono">${esc(r[0])}</td><td><strong>${esc(r[1])}</strong></td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td><td>${esc(r[5])}</td><td class="range-row-actions">${iconButton(`查看 ${r[1]} 详情`, `range-env-preview:${r[0]}`)}</td></tr>`).join(""), "range-pool-table")}
-        </section>`).join("")}
-      </div>
+      <div class="range-pool-lists">${sandboxLedger}${networkRangeList}</div>
     </div>`;
     const assetPageSize = 4;
     const assetTotalPages = Math.max(1, Math.ceil(assetPackages.length / assetPageSize));
@@ -1584,6 +1686,9 @@ const RangePages = (() => {
     if(name==="data-mode"){state.dataMode=node.dataset.value;return rerender();}
     if(name==="data-mode-direct"){state.dataMode=id;return rerender();}
     if(name==="data-resource-tab"){state.dataResourceTab=node.dataset.value;return rerender();}
+    if(name==="sandbox-ledger-page"){state.dataSandboxPageIndex=Number(node.dataset.value)||1;return rerender();}
+    if(name==="range-vuln-preview")return vulnerabilitySamplePreviewModal(id);
+    if(name==="sandbox-rebuild"){toast(`${id} 已加入沙箱重建队列`);return;}
     if(name==="range-env-preview")return rangeEnvironmentPreviewModal(id);
     if(name==="data-asset-type-filter"){state.dataAssetTypeFilter=node.dataset.value;state.dataAssetPackageId="";return rerender();}
     if(name==="data-asset-page"){state.dataAssetPageIndex=Number(node.dataset.value)||1;return rerender();}
@@ -1718,7 +1823,22 @@ const RangePages = (() => {
 
   function bind(root){
     root.onclick=(event)=>{const node=event.target.closest('[data-action]');if(!node||!root.contains(node))return;if(node.classList.contains('modal-layer')&&event.target.closest('[data-modal-panel]'))return;event.preventDefault();act(node.dataset.action,node);};
-    root.oninput=(event)=>{const el=event.target;if(el.dataset.input==="task-query"){state.taskQuery=el.value;state.taskPageIndex=1;const p=el.selectionStart;rerender();const next=root.querySelector('[data-input="task-query"]');next?.focus();next?.setSelectionRange(p,p);}if(el.dataset.input==="training-query"){state.trainingQuery=el.value;state.trainingPageIndex=1;const p=el.selectionStart;rerender();const next=root.querySelector('[data-input="training-query"]');next?.focus();next?.setSelectionRange(p,p);}if(el.dataset.draft&&state.taskWizard){state.taskWizard[el.dataset.draft]=el.value;if(el.dataset.draft==="modelId")renderTaskWizard();}if(el.dataset.limit&&state.taskWizard){state.taskWizard[el.dataset.limit]=Number(el.value);renderTaskWizard();}if(el.dataset.training&&state.trainingWizard){state.trainingWizard[el.dataset.training]=el.type==="checkbox"?el.checked:el.value;}if(el.dataset.trainingHp&&state.trainingWizard){state.trainingWizard.hp[el.dataset.trainingHp]=el.value;}if(el.dataset.question&&state.taskWizard){state.taskWizard.questionIds=[el.dataset.question];}if(el.dataset.benchmark&&state.trainingWizard){state.trainingWizard.benchmarks=[...root.querySelectorAll('[data-benchmark]:checked')].map(x=>x.dataset.benchmark);}const sel=root.querySelectorAll('[data-report-check]:checked').length;const counter=root.querySelector('#report-selection');if(counter)counter.textContent=`已选 ${sel} 条`;};
+    root.oninput=(event)=>{
+      const el=event.target;
+      if(el.dataset.input==="task-query"){state.taskQuery=el.value;state.taskPageIndex=1;const p=el.selectionStart;rerender();const next=root.querySelector('[data-input="task-query"]');next?.focus();next?.setSelectionRange(p,p);return;}
+      if(el.dataset.input==="training-query"){state.trainingQuery=el.value;state.trainingPageIndex=1;const p=el.selectionStart;rerender();const next=root.querySelector('[data-input="training-query"]');next?.focus();next?.setSelectionRange(p,p);return;}
+      if(el.dataset.input==="sandbox-query"){state.dataSandboxQuery=el.value;state.dataSandboxPageIndex=1;const p=el.selectionStart;rerender();const next=root.querySelector('[data-input="sandbox-query"]');next?.focus();next?.setSelectionRange(p,p);return;}
+      if(el.dataset.sandboxFilter){state[el.dataset.sandboxFilter]=el.value;state.dataSandboxPageIndex=1;rerender();return;}
+      if(el.dataset.draft&&state.taskWizard){state.taskWizard[el.dataset.draft]=el.value;if(el.dataset.draft==="modelId")renderTaskWizard();}
+      if(el.dataset.limit&&state.taskWizard){state.taskWizard[el.dataset.limit]=Number(el.value);renderTaskWizard();}
+      if(el.dataset.training&&state.trainingWizard){state.trainingWizard[el.dataset.training]=el.type==="checkbox"?el.checked:el.value;}
+      if(el.dataset.trainingHp&&state.trainingWizard){state.trainingWizard.hp[el.dataset.trainingHp]=el.value;}
+      if(el.dataset.question&&state.taskWizard){state.taskWizard.questionIds=[el.dataset.question];}
+      if(el.dataset.benchmark&&state.trainingWizard){state.trainingWizard.benchmarks=[...root.querySelectorAll('[data-benchmark]:checked')].map(x=>x.dataset.benchmark);}
+      const sel=root.querySelectorAll('[data-report-check]:checked').length;
+      const counter=root.querySelector('#report-selection');
+      if(counter)counter.textContent=`已选 ${sel} 条`;
+    };
     root.onchange=root.oninput;
   }
 
