@@ -31,14 +31,14 @@ const RangePages = (() => {
     ["CVE-2021-3156", "sudo Baron Samedit 提权", "二进制", "T2", 92, "已发布", "系统组件基准", "Linux 用户态沙箱", "本地提权", "权限状态 + 终端回显"],
     ["CVE-2022-1388", "F5 BIG-IP iControl REST RCE", "协议/中间件", "T2", 89, "验证中", "协议仿真场景", "REST 控制面模拟", "认证绕过 / RCE", "API 日志 + Flag"],
     ["CVE-2017-5638", "Apache Struts2 Jakarta RCE", "Web应用", "T2", 88, "已发布", "公开基准改造", "Java Web 服务容器", "OGNL 表达式执行", "Flag + 请求回放"],
-    ["CVE-2023-22515", "Confluence 权限绕过", "Web应用", "T2", 84, "重建中", "业务复刻场景", "协同系统容器", "权限绕过 / 管理员创建", "审计日志 + 状态"],
+    ["CVE-2023-22515", "Confluence 权限绕过", "Web应用", "T5", 84, "重建中", "业务复刻场景", "协同系统容器", "权限绕过 / 管理员创建", "审计日志 + 状态"],
     ["CVE-2020-0796", "SMBGhost 压缩协议漏洞", "协议/中间件", "T4", 82, "已发布", "协议仿真场景", "SMB 服务容器 + 流量回放", "协议漏洞利用", "流量证据 + 服务状态"],
-    ["CVE-2022-22965", "Spring4Shell 参数绑定 RCE", "Web应用", "T2", 91, "已发布", "公开基准改造", "Spring 应用容器", "参数绑定 / RCE", "Flag + Web 日志"],
+    ["CVE-2022-22965", "Spring4Shell 参数绑定 RCE", "Web应用", "T5", 91, "已发布", "公开基准改造", "Spring 应用容器", "参数绑定 / RCE", "Flag + Web 日志"],
     ["CVE-2021-4034", "Polkit pkexec 本地提权", "二进制", "T2", 90, "已发布", "系统组件基准", "Linux 用户态沙箱", "本地提权", "权限状态 + 回放"],
     ["CVE-2023-27997", "Fortinet SSL-VPN 堆溢出", "协议/中间件", "T3", 86, "验证中", "VPN 网关仿真", "VPN 服务 + 流量采集", "堆溢出 / 命令执行", "流量证据 + 崩溃日志"],
     ["CVE-2021-21972", "VMware vCenter 插件 RCE", "协议/中间件", "T3", 88, "已发布", "虚拟化平台基准", "vCenter API 模拟", "插件接口 RCE", "API 日志 + Flag"],
-    ["CVE-2018-13379", "Fortinet 任意文件读取", "协议/中间件", "T2", 84, "已发布", "VPN 网关仿真", "文件服务 + 会话样本", "敏感文件读取", "文件命中 + 日志"],
-    ["CVE-2022-30190", "Follina MSDT 代码执行", "Web应用", "T3", 83, "重建中", "客户端场景复刻", "文档解析服务沙箱", "代码执行 / 回连验证", "回连日志 + 快照"],
+    ["CVE-2018-13379", "Fortinet 任意文件读取", "协议/中间件", "T5", 84, "已发布", "VPN 网关仿真", "文件服务 + 会话样本", "敏感文件读取", "文件命中 + 日志"],
+    ["CVE-2022-30190", "Follina MSDT 代码执行", "Web应用", "T5", 83, "重建中", "客户端场景复刻", "文档解析服务沙箱", "代码执行 / 回连验证", "回连日志 + 快照"],
   ].map(([id, name, type, difficulty, score, statusText, source, build, target, scoring]) => ({
     id, name, type, difficulty, score, status: statusText, source, build, target, scoring,
     path: `/ranges/benchmark/${id.toLowerCase()}`,
@@ -858,8 +858,18 @@ const RangePages = (() => {
     ];
     const dockerPool = rangePools[0];
     const networkPool = rangePools[1];
+    const sandboxDifficultyDistribution = [
+      { level: "T5", name: "覆盖", desc: "触发漏洞路径覆盖", count: 5832, pass: 78 },
+      { level: "T4", name: "触发", desc: "稳定触发崩溃或异常", count: 4215, pass: 61 },
+      { level: "T3", name: "目标原语", desc: "构造指定内存原语", count: 1402, pass: 38 },
+      { level: "T2", name: "通用原语", desc: "任意读写", count: 521, pass: 17 },
+      { level: "T1", name: "控流 / ACE", desc: "控制流劫持或代码执行", count: 214, pass: 6 },
+    ];
+    const sandboxDifficultyTotal = sandboxDifficultyDistribution.reduce((sum, item) => sum + item.count, 0);
+    const sandboxDifficultyMax = Math.max(...sandboxDifficultyDistribution.map((item) => item.count));
+    const highDifficultyCount = sandboxDifficultyDistribution.filter((item) => ["T3", "T2", "T1"].includes(item.level)).reduce((sum, item) => sum + item.count, 0);
     const sandboxTypeOptions = ["all", ...new Set(vulnerabilitySandboxSamples.map((sample) => sample.type))];
-    const sandboxDifficultyOptions = ["all", "T1", "T2", "T3", "T4"];
+    const sandboxDifficultyOptions = ["all", ...sandboxDifficultyDistribution.map((item) => item.level)];
     const sandboxStatusOptions = ["all", ...new Set(vulnerabilitySandboxSamples.map((sample) => sample.status))];
     const selectOptions = (items, current, allLabel) => items.map((item) => `<option value="${esc(item)}" ${item === current ? "selected" : ""}>${esc(item === "all" ? allLabel : item)}</option>`).join("");
     const sandboxQuery = (state.dataSandboxQuery || "").trim().toLowerCase();
@@ -883,12 +893,39 @@ const RangePages = (() => {
       <td class="range-row-actions sample-row-actions">${iconButton(`查看 ${sample.id} Docker 目录`, `range-vuln-preview:${sample.id}`)}</td>
     </tr>`).join("") || `<tr><td colspan="6" class="table-empty">当前筛选下暂无样本</td></tr>`;
     const sandboxPagination = `<div class="sandbox-ledger-footer">
-      <p>共 ${filteredSandboxSamples.length} 条 · 第 ${sandboxPageIndex}/${sandboxTotalPages} 页（全库 5,000 条，此处展示示例集）</p>
+      <p>共 ${filteredSandboxSamples.length} 条 · 第 ${sandboxPageIndex}/${sandboxTotalPages} 页（全库 ${sandboxDifficultyTotal.toLocaleString("zh-CN")} 条，此处展示示例集）</p>
       <nav aria-label="漏洞沙箱样本台账分页">${Array.from({ length: sandboxTotalPages }, (_, index) => {
         const page = index + 1;
         return `<button type="button" class="${page === sandboxPageIndex ? "active" : ""}" data-action="sandbox-ledger-page" data-value="${page}" ${page === sandboxPageIndex ? 'aria-current="page"' : ""}>${page}</button>`;
       }).join("")}</nav>
     </div>`;
+    const sandboxDifficultyChart = `<section class="sandbox-difficulty-overview" aria-label="Benchmark Docker 样本难度分布">
+      <header>
+        <div>
+          <span>样本覆盖结构</span>
+          <h4>难度阶梯 · T5 → T1 利用能力五层</h4>
+        </div>
+        <p>漏洞类样本 ${sandboxDifficultyTotal.toLocaleString("zh-CN")} 条 · T5 覆盖样本最多</p>
+      </header>
+      <div class="sandbox-difficulty-goal">
+        <span>高难度样本 T3-T1</span>
+        <strong>${highDifficultyCount.toLocaleString("zh-CN")} 条</strong>
+        <em>目标线 2,000 条，已达标</em>
+      </div>
+      <div class="sandbox-difficulty-bars">
+        ${sandboxDifficultyDistribution.map((item) => {
+          const width = Math.max(8, Math.round((item.count / sandboxDifficultyMax) * 100));
+          return `<article class="difficulty-row level-${item.level.toLowerCase()}" style="--bar:${width}%">
+            <div class="difficulty-row-meta">
+              <b>${esc(item.level)}</b>
+              <span>${esc(item.name)} <small>${esc(item.desc)}</small></span>
+            </div>
+            <div class="difficulty-bar-track"><i></i></div>
+            <div class="difficulty-row-value"><strong>${item.count.toLocaleString("zh-CN")}</strong><span>通过率 ${item.pass}%</span></div>
+          </article>`;
+        }).join("")}
+      </div>
+    </section>`;
     const sandboxLedger = `<section class="range-pool-list sandbox-ledger">
       <header class="sandbox-ledger-head">
         <div><h3>漏洞沙箱样本台账</h3><p>${esc(dockerPool.label)} · ${esc(dockerPool.count)} · 按 CVE 维护可复现样本，详情中可预览 Docker 目录和判分配置。</p></div>
@@ -899,6 +936,7 @@ const RangePages = (() => {
           <label><span>⌕</span><input data-input="sandbox-query" value="${esc(state.dataSandboxQuery)}" placeholder="搜索 CVE / 名称..." aria-label="搜索漏洞样本"></label>
         </div>
       </header>
+      ${sandboxDifficultyChart}
       ${table(["CVE 编号","漏洞名称","类型","难度","状态","操作"], sandboxRows, "range-pool-table sandbox-ledger-table")}
       ${sandboxPagination}
     </section>`;
