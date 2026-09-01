@@ -308,17 +308,58 @@ const RangePages = (() => {
     const item = catalog[id];
     if (!item) return toast("暂无环境详情", "warning");
     const tree = [`${item.path}/`, ...item.files.map((file) => `  ${file}`)].join("\n");
+    const preview = item.kind === "docker"
+      ? {
+        heading: "漏洞服务拓扑预览",
+        note: "数据中心只展示输入资产的可复现结构；完整作战入口在靶场大厅。",
+        tags: ["Benchmark", "Docker", "可回放"],
+        metrics: [["服务节点", "6"], ["容器镜像", "4"], ["判分基线", "Flag"], ["重建时长", "12min"]],
+        specs: [["网络拓扑", "2 网段 / 6 节点"], ["镜像构成", "基础镜像 ×2 / 漏洞服务 ×1 / Judge ×1"], ["资源规格", "12 vCPU · 32GB · 120GB"], ["环境池", "预热 3 套 · 构建 12min"]],
+        zones: [
+          ["外部入口", ["attacker", "proxy"]],
+          ["漏洞服务区", ["target", "db"]],
+          ["评测判分区", ["judge", "collector"]],
+        ],
+      }
+      : {
+        heading: "真实业务拓扑仿真（多网段纵深）",
+        note: "数据中心只看靶场作为输入资产的规模、拓扑和配置；演练阶段与作战协同留在靶场大厅。",
+        tags: ["网络靶场", "拓扑仿真", "证据采集"],
+        metrics: [["拓扑节点", "15"], ["攻击链里程碑", "M8"], ["作战目标", "核心DB"], ["硬倒计时", "6h"]],
+        specs: [["网络拓扑", "4 网段 / 15 节点"], ["镜像构成", "19 镜像 · 国产化 OS×8 / Win×4 / Linux×3"], ["资源规格", "48 vCPU · 192GB · 1TB"], ["环境池", "预热 2 套 · 构建 35min"]],
+        zones: [
+          ["政务外网", ["portal", "waf"]],
+          ["DMZ 区", ["sso", "api-gateway"]],
+          ["业务资源池", ["app-db", "file-share", "knowledge-base"]],
+          ["安全运营中心", ["audit", "scanner", "jump-host"]],
+        ],
+      };
+    const tags = preview.tags.map((tag) => badge(tag, tag === "Benchmark" || tag === "网络靶场" ? "info" : "outline")).join("");
+    const metrics = preview.metrics.map(([label, value]) => `<article><b>${esc(value)}</b><span>${esc(label)}</span></article>`).join("");
+    const specs = preview.specs.map(([label, value]) => `<div><span>${esc(label)}</span><b>${esc(value)}</b></div>`).join("");
+    const topologyZones = preview.zones.map(([label, nodes]) => `<article><b>${esc(label)}</b><div>${nodes.map((node) => `<span>${esc(node)}</span>`).join("")}</div></article>`).join("");
     const body = `<div class="range-env-preview">
-      <section class="range-env-summary">
-        <div><span class="mono">${esc(id)}</span><h3>${esc(item.title)}</h3><p>${esc(item.kind === "docker" ? "Docker 环境用于 benchmark 复现、批量评测和训练回归；目录中包含编排、服务、判分和快照文件。" : "网络靶场用于真实拓扑、协议仿真和多网区演练；目录中包含拓扑、网段、服务、证据采集和判分配置。")}</p></div>
+      <section class="range-env-summary range-env-summary-rich">
+        <div><span class="mono">${esc(id)}</span><h3>${esc(item.title)}</h3><p>${esc(item.kind === "docker" ? "Docker 环境用于 benchmark 复现、批量评测和训练回归；目录中包含编排、服务、判分和快照文件。" : "网络靶场用于真实拓扑、协议仿真和多网区演练；目录中包含拓扑、网段、服务、证据采集和判分配置。")}</p><div class="range-preview-tags">${tags}</div></div>
         ${detailList([["类型", item.kind === "docker" ? "Benchmark Docker 环境" : "网络靶场"], ["来源", esc(item.source)], ["构建方式", esc(item.build)], ["任务目标", esc(item.target)], ["判分方式", esc(item.scoring)]])}
+      </section>
+      <section class="range-env-kpis">${metrics}</section>
+      <section class="range-env-mid">
+        <article class="range-env-topology-card">
+          <div class="mini-section-title"><span>${esc(preview.heading)}</span><small>${esc(preview.note)}</small></div>
+          <div class="range-topology-mini">${topologyZones}</div>
+        </article>
+        <article class="range-env-spec-card">
+          <div class="mini-section-title"><span>环境规格</span><small>数据中心保留资产口径</small></div>
+          <div class="range-env-spec-list">${specs}</div>
+        </article>
       </section>
       <section class="range-env-files">
         <article><h3>${item.kind === "docker" ? "Docker 目录" : "靶场目录"}</h3><pre><code>${esc(tree)}</code></pre></article>
         <article><h3>${item.kind === "docker" ? "compose 预览" : "拓扑配置预览"}</h3><pre><code>${esc(item.code)}</code></pre></article>
       </section>
     </div>`;
-    state.modal = modal("靶场环境详情", `${id} · ${item.title}`, body, `${button("关闭", "close-modal", "secondary")}${button("用该环境创建任务", "new-task", "primary")}`, "xwide");
+    state.modal = modal("靶场环境详情", `${id} · ${item.title}`, body, `${button("关闭", "close-modal", "secondary")}${button("到靶场大厅创建任务", "go-range-hall", "primary")}`, "xwide");
     rerender();
   }
 
@@ -1712,6 +1753,7 @@ const RangePages = (() => {
       if(["trajectory","exp","report","evidence"].includes(target)){return focusDataAssetLibrary(target);}
     }
     if(name==="go-tasks-running"){state.taskFilter="running";state.taskPageIndex=1;location.hash="#/tasks";return;}
+    if(name==="go-range-hall"){location.hash="#/range-hall";return;}
     if(name==="go-models"){location.hash="#/models";return;}
     if(name==="go-data-overview"){state.dataMode="overview";location.hash="#/data";return;}
     if(name==="model-eval-export"){download("RANGE-Agent-v2.3.1-eval-summary.json", { model: "RANGE-Agent v2.3.1", score: 77.4, uplift: "+7.3 个百分点", status: "评测中" });return toast("模型评测摘要已导出");}
