@@ -940,9 +940,21 @@ const RangePages = (() => {
       ${table(["CVE 编号","漏洞名称","类型","难度","状态","操作"], sandboxRows, "range-pool-table sandbox-ledger-table")}
       ${sandboxPagination}
     </section>`;
-    const networkRangeList = `<section class="range-pool-list">
-      <h3>${esc(networkPool.label)}</h3>
-      ${table(["环境编号","环境名称","来源","构建方式","任务目标","判分方式",""], networkPool.rows.map((r) => `<tr><td class="mono">${esc(r[0])}</td><td><strong>${esc(r[1])}</strong></td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td><td>${esc(r[5])}</td><td class="range-row-actions">${iconButton(`查看 ${r[1]} 详情`, `range-env-preview:${r[0]}`)}</td></tr>`).join(""), "range-pool-table")}
+    const networkRangeReference = `<section class="network-range-reference">
+      <div>
+        <span>网络靶场引用</span>
+        <h3>完整拓扑与作战入口统一放在靶场大厅</h3>
+        <p>数据中心只记录网络靶场作为输入环境参与了哪些演练任务，以及这些任务后续产生的轨迹、EXP、报告和证据如何回流。环境拓扑、阶段目标、角色分工和启动动作统一从靶场大厅进入。</p>
+      </div>
+      <dl>
+        <div><dt>${esc(networkPool.count)}</dt><dd>网络靶场</dd></div>
+        <div><dt>9 个</dt><dd>关联演练任务</dd></div>
+        <div><dt>4 类</dt><dd>回流产物</dd></div>
+      </dl>
+      <footer>
+        ${button("去靶场大厅", "go-range-hall", "secondary")}
+        ${button("新建测试任务", "new-task", "primary")}
+      </footer>
     </section>`;
     const rangePoolView = `<div class="range-pool-view">
       <div class="asset-library-head">
@@ -956,7 +968,7 @@ const RangePages = (() => {
           <footer>${button("创建任务", "new-task", "primary")}</footer>
         </article>`).join("")}
       </div>
-      <div class="range-pool-lists">${sandboxLedger}${networkRangeList}</div>
+      <div class="range-pool-lists">${sandboxLedger}${networkRangeReference}</div>
     </div>`;
     const assetPageSize = 4;
     const assetTotalPages = Math.max(1, Math.ceil(assetPackages.length / assetPageSize));
