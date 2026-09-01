@@ -940,35 +940,28 @@ const RangePages = (() => {
       ${table(["CVE 编号","漏洞名称","类型","难度","状态","操作"], sandboxRows, "range-pool-table sandbox-ledger-table")}
       ${sandboxPagination}
     </section>`;
-    const networkRangeReference = `<section class="network-range-reference">
-      <div>
-        <span>网络靶场引用</span>
-        <h3>完整拓扑与作战入口统一放在靶场大厅</h3>
-        <p>数据中心只记录网络靶场作为输入环境参与了哪些演练任务，以及这些任务后续产生的轨迹、EXP、报告和证据如何回流。环境拓扑、阶段目标、角色分工和启动动作统一从靶场大厅进入。</p>
-      </div>
-      <dl>
-        <div><dt>${esc(networkPool.count)}</dt><dd>网络靶场</dd></div>
-        <div><dt>9 个</dt><dd>关联演练任务</dd></div>
-        <div><dt>4 类</dt><dd>回流产物</dd></div>
-      </dl>
-      <footer>
-        ${button("去靶场大厅", "go-range-hall", "secondary")}
-        ${button("新建测试任务", "new-task", "primary")}
-      </footer>
-    </section>`;
+    const rangePoolSummary = rangePools.map((pool, index) => {
+      const isNetworkPool = index === 1;
+      const cardClass = `range-pool-card${isNetworkPool ? " range-pool-card-network" : ""}`;
+      const cardBadge = badge(isNetworkPool ? "详情在靶场大厅" : "可用于评测任务", "outline");
+      const extraNote = isNetworkPool ? `<div class="range-pool-note"><span>9 个关联演练任务</span><span>4 类回流产物</span><span>拓扑 / 阶段目标 / 启动动作在靶场大厅维护</span></div>` : "";
+      const footerAction = isNetworkPool ? `${button("去靶场大厅", "go-range-hall", "secondary")}${button("新建测试任务", "new-task", "primary")}` : button("创建任务", "new-task", "primary");
+      return `<article class="${cardClass}">
+        <header><div><span>${esc(pool.label)}</span><b>${esc(pool.count)}</b></div>${cardBadge}</header>
+        <p>${esc(pool.desc)}</p>
+        <div class="range-pool-metrics">${pool.stats.map(([name, value]) => `<i><span>${esc(name)}</span><strong>${esc(value)}</strong></i>`).join("")}</div>
+        ${extraNote}
+        <footer>${footerAction}</footer>
+      </article>`;
+    }).join("");
     const rangePoolView = `<div class="range-pool-view">
       <div class="asset-library-head">
         <div><span>输入环境池</span><b>按承载形态分为两类靶场输入</b><small>任务创建时统一称为靶场环境；进入资料池后拆成 Benchmark Docker 环境和网络靶场，便于分别维护镜像、拓扑、判分和回放规则。</small></div>
       </div>
       <div class="range-pool-summary">
-        ${rangePools.map((pool) => `<article class="range-pool-card">
-          <header><div><span>${esc(pool.label)}</span><b>${esc(pool.count)}</b></div>${badge("可用于评测任务", "outline")}</header>
-          <p>${esc(pool.desc)}</p>
-          <div class="range-pool-metrics">${pool.stats.map(([name, value]) => `<i><span>${esc(name)}</span><strong>${esc(value)}</strong></i>`).join("")}</div>
-          <footer>${button("创建任务", "new-task", "primary")}</footer>
-        </article>`).join("")}
+        ${rangePoolSummary}
       </div>
-      <div class="range-pool-lists">${sandboxLedger}${networkRangeReference}</div>
+      <div class="range-pool-lists">${sandboxLedger}</div>
     </div>`;
     const assetPageSize = 4;
     const assetTotalPages = Math.max(1, Math.ceil(assetPackages.length / assetPageSize));
