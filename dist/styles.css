@@ -1009,21 +1009,12 @@ td > small { color: var(--quiet); font-size: 12px; line-height: 1.55; }
 .merge-preview-panel header .mono{color:var(--primary);font-size:12px}
 .merge-preview-panel h3{margin:5px 0 0;font-size:16px;font-weight:600}
 .merge-preview-panel strong{color:var(--text);font-size:13px;font-weight:500}
-.trace-legend{display:flex;flex-wrap:wrap;align-items:center;gap:7px;padding:10px 14px;border-bottom:1px solid rgba(89,190,222,.16);color:var(--quiet);font-size:12px}
-.trace-legend .dot{width:8px;height:8px;display:inline-block;margin-left:6px}
+.trace-legend{display:flex;flex-wrap:wrap;align-items:center;gap:7px;padding:9px 10px;color:var(--quiet);border:1px solid rgba(89,190,222,.16);background:rgba(2,8,14,.26);font-size:12px}
+.trace-legend .dot{width:8px;height:8px;display:inline-block}
 .trace-legend .dot.keep{background:var(--success)}
 .trace-legend .dot.drop{background:var(--quiet)}
 .trace-legend .dot.review{background:var(--warning)}
 .trace-legend .dot.negative{background:var(--danger)}
-.trace-map{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;padding:10px 14px;border-bottom:1px solid rgba(89,190,222,.16);background:rgba(1,5,10,.2)}
-.trace-map-chip{display:grid;gap:4px;min-height:46px;padding:8px;color:var(--muted);border:1px solid rgba(39,79,97,.58);background:rgba(2,8,14,.28);text-align:left;cursor:pointer}
-.trace-map-chip.active{border-color:rgba(142,203,255,.76);box-shadow:inset 0 -2px var(--primary)}
-.trace-map-chip.line-keep{border-left:3px solid var(--success)}
-.trace-map-chip.line-drop{border-left:3px solid var(--quiet)}
-.trace-map-chip.line-review{border-left:3px solid var(--warning)}
-.trace-map-chip.line-negative{border-left:3px solid var(--danger)}
-.trace-map-chip span{color:var(--text);font-size:12px}
-.trace-map-chip b{color:var(--quiet);font:normal 12px/1 var(--mono)}
 .trace-scroll-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 14px;border-bottom:1px solid rgba(89,190,222,.16);background:rgba(6,19,30,.65)}
 .trace-scroll-tools span{color:var(--text);font-size:12px;font-weight:500;text-align:left}
 .trace-scroll-tools small{color:var(--quiet);font-size:12px;line-height:1.45;text-align:right}

@@ -1251,18 +1251,17 @@ const RangePages = (() => {
         <code>${esc(line.text)}</code>
         <em>${esc(line.region || "上下文")}</em>
       </p>`).join("");
-      const segmentMap = regions.map((region) => `<button type="button" class="trace-map-chip ${region.id === selectedRegion.id ? "active" : ""} line-${esc(region.lines[1]?.role || "context")}" data-action="data-region-select:${region.id}"><span>${esc(region.id)}</span><b>${esc(region.range)}</b></button>`).join("");
+      const traceLegend = `<div class="trace-legend"><span class="dot keep"></span>保留 <span class="dot drop"></span>丢弃 <span class="dot review"></span>人工确认 <span class="dot negative"></span>负例</div>`;
       return `<section class="content-card merge-workbench-card">
         ${sectionHead("长轨迹滚动审阅", `${task.trajectory.autoTool} 自动标注 · 滚动选择行或片段`, badge(selectedRegion.status, dataTone(selectedRegion.status)))}
         <div class="merge-review-layout">
           <aside class="merge-region-list">
-            <div class="mini-section-title"><span>片段导航</span><small>${esc(task.trajectory.rawFile)}</small></div>
+            ${traceLegend}
+            <div class="mini-section-title"><span>片段导航</span></div>
             ${regionCards}
           </aside>
           <section class="merge-preview-panel">
             <header><div><span class="mono">${esc(selectedRegion.id)} · ${esc(selectedRegion.range)}</span><h3>${esc(selectedRegion.title)}</h3></div><strong>滚动选择</strong></header>
-            <div class="trace-legend"><span class="dot keep"></span>保留 <span class="dot drop"></span>丢弃 <span class="dot review"></span>人工确认 <span class="dot negative"></span>负例</div>
-            <div class="trace-map">${segmentMap}</div>
             <div class="trace-scroll-tools"><span>按行审阅</span><small>点击行选中，左侧 + / - 可逐行保留或丢弃；面板可滚动查看长轨迹。</small></div>
             <div class="merge-preview long-trace-preview">${preview}</div>
           </section>
