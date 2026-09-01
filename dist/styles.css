@@ -1264,8 +1264,9 @@ td > small { color: var(--quiet); font-size: 12px; line-height: 1.55; }
 .data-resource-body .upload-row{margin:14px 14px 0}
 .data-resource-body .upload-row+.table-wrap{margin-top:14px}
 .range-pool-view{display:grid;gap:14px;padding:14px}
-.range-pool-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.range-pool-summary{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,.55fr);gap:12px}
 .range-pool-card{display:grid;gap:12px;min-width:0;padding:14px;border:1px solid rgba(89,190,222,.18);background:rgba(2,8,14,.34)}
+.range-pool-card-primary{border-color:rgba(142,203,255,.28);background:linear-gradient(180deg,rgba(10,32,48,.5),rgba(2,8,14,.3))}
 .range-pool-card header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
 .range-pool-card header>div{display:grid;gap:5px;min-width:0}
 .range-pool-card span{color:var(--quiet);font-size:12px}
@@ -1274,10 +1275,15 @@ td > small { color: var(--quiet); font-size: 12px; line-height: 1.55; }
 .range-pool-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:rgba(39,79,97,.28)}
 .range-pool-metrics i{display:grid;gap:5px;min-width:0;padding:9px;background:rgba(6,19,30,.72);font-style:normal}
 .range-pool-metrics strong{color:var(--text);font:16px/1 var(--mono)}
-.range-pool-note{display:flex;flex-wrap:wrap;gap:6px;color:var(--quiet);font-size:12px;line-height:1.4}
-.range-pool-note span{display:inline-flex;align-items:center;min-height:24px;padding:0 8px;border:1px solid rgba(89,190,222,.18);background:rgba(6,19,30,.48);color:var(--muted)}
-.range-pool-card-network{background:linear-gradient(180deg,rgba(10,32,48,.42),rgba(2,8,14,.26))}
 .range-pool-card footer{display:flex;justify-content:flex-end;gap:8px}
+.range-pool-side-note{display:grid;gap:11px;align-content:start;min-width:0;padding:14px;border:1px dashed rgba(89,190,222,.28);background:rgba(2,8,14,.18)}
+.range-pool-side-note header{display:grid;gap:6px}
+.range-pool-side-note span{color:var(--primary);font-size:12px}
+.range-pool-side-note b{color:var(--text);font-size:16px;font-weight:650;line-height:1.35}
+.range-pool-side-note p{margin:0;color:var(--muted);font-size:12px;line-height:1.65}
+.range-pool-side-meta{display:flex;flex-wrap:wrap;gap:6px}
+.range-pool-side-meta span{display:inline-flex;min-height:24px;align-items:center;padding:0 8px;color:var(--quiet);border:1px solid rgba(89,190,222,.16);background:rgba(6,19,30,.5)}
+.range-pool-side-note footer{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
 .range-pool-lists{display:grid;gap:14px}
 .range-pool-list{display:grid;gap:10px;min-width:0}
 .range-pool-list h3{margin:0;color:var(--text);font-size:14px;font-weight:650}
