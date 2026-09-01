@@ -1327,6 +1327,16 @@ td > small { color: var(--quiet); font-size: 12px; line-height: 1.55; }
 .difficulty-row-value{display:grid;justify-items:end;gap:4px}
 .difficulty-row-value strong{color:var(--text);font:700 15px/1 var(--mono)}
 .difficulty-row-value span{color:var(--quiet);font-size:12px}
+.network-range-reference{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.58fr) auto;gap:18px;align-items:center;padding:16px 18px;border:1px solid rgba(89,190,222,.16);background:rgba(2,8,14,.24)}
+.network-range-reference>div{display:grid;gap:6px;min-width:0}
+.network-range-reference span{color:var(--primary);font-size:12px}
+.network-range-reference h3{margin:0;color:var(--text);font-size:15px;font-weight:650}
+.network-range-reference p{max-width:760px;margin:0;color:var(--muted);font-size:12px;line-height:1.65}
+.network-range-reference dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin:0;background:rgba(39,79,97,.22)}
+.network-range-reference dl div{min-width:0;padding:10px 12px;background:rgba(6,19,30,.62)}
+.network-range-reference dt{margin:0 0 5px;color:var(--text);font:700 18px/1 var(--mono)}
+.network-range-reference dd{margin:0;color:var(--quiet);font-size:12px}
+.network-range-reference footer{display:flex;gap:8px;justify-content:flex-end;white-space:nowrap}
 .sandbox-ledger-table{min-width:1040px}
 .sandbox-ledger-table th:last-child,.sandbox-ledger-table td:last-child{width:62px;text-align:center}
 .sandbox-ledger-table td strong+small{display:block;margin-top:5px;color:var(--quiet);font-size:12px;line-height:1.45}
@@ -1669,6 +1679,8 @@ td > small { color: var(--quiet); font-size: 12px; line-height: 1.55; }
   .sandbox-difficulty-overview header p { text-align: left; }
   .difficulty-row { grid-template-columns: minmax(220px,.8fr) minmax(220px,1fr) 126px; gap: 10px; }
   .difficulty-row-meta small { display: block; margin: 4px 0 0; }
+  .network-range-reference { grid-template-columns: 1fr; align-items: start; }
+  .network-range-reference footer { justify-content: flex-start; }
   .raw-output-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
   .high-value-package-card>header { grid-template-columns: minmax(240px,1fr) minmax(300px,1.26fr) minmax(180px,.72fr) 124px; }
   .asset-package-chip-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
