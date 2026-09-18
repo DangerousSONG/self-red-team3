@@ -38,6 +38,7 @@ for (const dir of staticDirs) {
 }
 
 fs.copyFileSync(path.join(root, ".openai", "hosting.json"), path.join(hostingDir, "hosting.json"));
+fs.writeFileSync(path.join(dist, ".nojekyll"), "", "utf8");
 
 const textRoutes = {
   "/index.html": { type: "text/html; charset=utf-8", file: "index.html" },
