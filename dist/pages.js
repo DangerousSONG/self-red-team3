@@ -6,7 +6,7 @@ const RangePages = (() => {
   const state = {
     route: "tasks", root: null, taskFilter: null, taskQuery: "", taskPageIndex: 1, tasks: clone(D.taskQueue), reports: clone(D.reports),
     reviews: clone(D.reviewTickets), questions: clone(D.questionSets), training: clone(D.trainingTasks), keys: clone(D.apiKeys),
-    taskWizard: null, trainingWizard: null, trainingFilter: null, trainingQuery: "", trainingPageIndex: 1, modal: null, gatewayTab: "agents", verifyStep: 0, loginMode: "login", dataTaskId: "JOB-20260805-021", dataOutputType: "trajectory", dataMode: "overview", resultsMode: "task", dataResourceTab: "benchmark", dataSandboxTargetFilter: "all", dataSandboxDirectionFilter: "all", dataSandboxQuery: "", dataSandboxPageIndex: 1, dataAssetPageIndex: 1, dataAssetTypeFilter: "all", dataTaskKindFilter: "all", dataAssetPackageId: "", dataAssetGuideType: "", dataTrainingAssetType: "sft", dataRlEnvMode: "reference", dataScriptName: "", dataEvidenceId: "", dataReportId: "", dataIngests: {},
+    taskWizard: null, trainingWizard: null, trainingFilter: null, trainingQuery: "", trainingPageIndex: 1, modal: null, gatewayTab: "agents", verifyStep: 0, loginMode: "login", dataTaskId: "JOB-20260805-021", dataOutputType: "trajectory", dataMode: "overview", resultsMode: "task", dataReturnSource: "", dataResourceTab: "benchmark", dataSandboxTargetFilter: "all", dataSandboxDirectionFilter: "all", dataSandboxQuery: "", dataSandboxPageIndex: 1, dataAssetPageIndex: 1, dataAssetTypeFilter: "all", dataTaskKindFilter: "all", dataAssetPackageId: "", dataAssetGuideType: "", dataTrainingAssetType: "sft", dataRlEnvMode: "reference", dataScriptName: "", dataEvidenceId: "", dataReportId: "", dataIngests: {},
     reportReady: false, liveTrainingId: null,
   };
 
@@ -1203,7 +1203,7 @@ const RangePages = (() => {
         <td class="mono">${esc(pkg.id)}</td>
         <td>${taskPrimary(pkg.title, `${pkg.range || "评测题集/靶场"} · ${pkg.finishedAt || "已完成"}`)}</td>
         <td>${esc(pkg.agent || "系统运行器")}</td>
-        <td>${taskRunStack(status("done"), "运行完成，产物已回写")}</td>
+        <td>${taskRunStack(progress(100), "运行完成，产物已回写")}</td>
         <td class="task-result-cell">${taskResultStack(badge(conclusion, resultTone), resultSummary(result))}</td>
         <td class="task-data-summary">${taskDataStack(dataTitle, `${assetText} · ${supportText}`)}</td>
         <td class="row-actions"><div class="task-actions task-actions-compact">${button("原始包", `results-mode-raw:${pkg.id}`, "secondary")}${button(actionLabel, `result-task-process:${pkg.id}`, "primary")}</div></td>
@@ -2084,7 +2084,8 @@ ${sample.verifyScript}`,
     const dataCenterTabMode = dataCenterMode === "process" ? "raw" : dataCenterMode === "assetDetail" ? "records" : dataCenterMode;
     state.resultsMode = resultsMode;
     const resultActions = "";
-    const dataCenterActions = `<div class="data-mode-switch result-mode-switch">${dataCenterModes.map(([key, label]) => `<a class="${dataCenterTabMode === key ? "active" : ""}" href="#/${dataModeRouteMap[key]}">${esc(label)}</a>`).join("")}</div>`;
+    const showTaskReturn = state.dataReturnSource === "tasks" && ["raw", "process", "records", "assetDetail"].includes(dataCenterMode);
+    const dataCenterActions = `<div class="data-page-actions">${showTaskReturn ? button("返回测试任务", "data-back-to-tasks", "secondary") : ""}<div class="data-mode-switch result-mode-switch">${dataCenterModes.map(([key, label]) => `<a class="${dataCenterTabMode === key ? "active" : ""}" href="#/${dataModeRouteMap[key]}">${esc(label)}</a>`).join("")}</div></div>`;
     const modeActions = dataCenterActions;
     const currentTaskIsBenchmark = dataIsBenchmarkTask(task);
     const currentOutputReady = isDataAssetReady(output);
@@ -2578,11 +2579,7 @@ ${sample.verifyScript}`,
       </div>
       <div class="raw-package-list raw-package-list-clean">${rawPackageRows || `<div class="empty-state">当前暂无原始产物包</div>`}</div>
     </div>`;
-    const trainingPurposeOptions = [["sft", "SFT 数据"], ["rl", "RL Episode"]];
-    const trainingPurposeKeys = trainingPurposeOptions.map(([key]) => key);
-    const rawTrainingFilter = state.dataAssetTypeFilter || "all";
-    const trainingAssetFilter = trainingPurposeKeys.includes(rawTrainingFilter) ? rawTrainingFilter : rawTrainingFilter === "episode" ? "rl" : "sft";
-    state.dataAssetTypeFilter = trainingAssetFilter;
+    state.dataAssetTypeFilter = "all";
     state.dataTrainingAssetType = state.dataTrainingAssetType === "rl" ? "rl" : "sft";
 
     const makeTrainingAssets = (pkg) => {
@@ -2621,15 +2618,13 @@ ${sample.verifyScript}`,
     const trainingAssetPackages = filteredRawPackages
       .map((pkg) => ({ ...pkg, trainingAssets: makeTrainingAssets(pkg) }))
       .filter((pkg) => pkg.trainingAssets.length > 0);
-    const visibleTrainingPackages = trainingAssetPackages.filter((pkg) => pkg.trainingAssets.some((asset) => asset.type === trainingAssetFilter));
+    const visibleTrainingPackages = trainingAssetPackages;
     if (state.dataAssetPackageId && !visibleTrainingPackages.some((pkg) => pkg.id === state.dataAssetPackageId)) state.dataAssetPackageId = "";
     const activeTrainingPackage = visibleTrainingPackages.find((pkg) => pkg.id === state.dataAssetPackageId) || visibleTrainingPackages[0];
     if (activeTrainingPackage && !state.dataAssetPackageId) state.dataAssetPackageId = activeTrainingPackage.id;
     if (activeTrainingPackage && !activeTrainingPackage.trainingAssets.some((asset) => asset.type === state.dataTrainingAssetType)) {
       state.dataTrainingAssetType = activeTrainingPackage.trainingAssets[0]?.type || "sft";
     }
-    const countTrainingAssets = (type) => trainingAssetPackages.reduce((sum, pkg) => sum + pkg.trainingAssets.filter((asset) => asset.type === type).length, 0);
-    const trainingTypeSwitch = `<div class="asset-purpose-switch training-purpose-switch">${trainingPurposeOptions.map(([key, label]) => `<button type="button" class="${trainingAssetFilter === key ? "active" : ""}" data-action="data-asset-type-filter" data-value="${key}"><b>${esc(label)}</b><span>${countTrainingAssets(key)} 组数据</span></button>`).join("")}</div>`;
     const lineEventType = (text = "") => {
       if (/^action:/i.test(text)) return ["工具调用", "assistant_tool_call"];
       if (/^observation:/i.test(text)) return ["观察结果", "tool_observation"];
@@ -2759,7 +2754,8 @@ ${sample.verifyScript}`,
     const trainingPackageRows = visibleTrainingPackages.map((pkg) => {
       const isBenchmarkPackage = dataIsBenchmarkTask(pkg);
       const assets = pkg.trainingAssets || [];
-      const rowDownloadAsset = assets.find((asset) => asset.type === trainingAssetFilter) || assets[0];
+      const defaultOpenAsset = assets.find((asset) => asset.type === state.dataTrainingAssetType) || assets[0];
+      const hasRlAsset = assets.some((asset) => asset.type === "rl");
       const assetButtons = assets.map((asset) => `<button type="button" class="training-asset-chip asset-${esc(asset.type)}" data-action="data-training-open:${pkg.id}|${asset.type}">
         <span>${esc(asset.label)}</span><b>${esc(asset.count)}</b><small>${esc(asset.status)}</small>
       </button>`).join("");
@@ -2769,8 +2765,8 @@ ${sample.verifyScript}`,
           <div class="training-package-assets">${assetButtons}</div>
           <div class="training-package-model"><span>模型反馈</span><b>${esc(pkg.modelVersion?.current || "待评测")}</b><small>${esc(pkg.modelVersion?.uplift || "等待版本评测")}</small></div>
           <div class="training-package-actions">
-            ${button(rowDownloadAsset?.type === "rl" ? "下载 RL" : "下载 SFT", `data-training-download:${pkg.id}|${rowDownloadAsset?.type || "sft"}`, "secondary")}
-            ${button("查看详情", `data-training-open:${pkg.id}|${rowDownloadAsset?.type || "sft"}`, "primary")}
+            ${button(hasRlAsset ? "下载 SFT/RL" : "下载 SFT", `data-training-download:${pkg.id}|bundle`, "secondary")}
+            ${button("查看详情", `data-training-open:${pkg.id}|${defaultOpenAsset?.type || "sft"}`, "primary")}
           </div>
         </header>
       </article>`;
@@ -2788,7 +2784,7 @@ ${sample.verifyScript}`,
     const highValueAssetView = `<div class="training-assets-view">
       <div class="asset-library-head training-assets-head">
         <div><span>训练数据资产</span><b>按评测任务组织 SFT 与 RL</b><small>这里只展示可直接进入训练链路的数据；原始支撑材料统一在“原始产物”页查看。</small></div>
-        <div class="training-filter-stack">${taskKindFilterBar}${trainingTypeSwitch}</div>
+        <div class="training-filter-stack">${taskKindFilterBar}</div>
       </div>
       <div class="raw-rule-strip" aria-label="训练数据规则">
         <span><b>SFT</b> 靶场来自 cli-stdout；Benchmark 由平台内部接口自动转换。</span>
@@ -3897,8 +3893,9 @@ ${sample.verifyScript}`,
       location.hash=`#/${route}`;
       return;
     }
-    if(name==="results-mode-raw"){state.dataTaskId=id;state.resultsMode="raw";if(state.route==="data-raw")return rerender();location.hash="#/data-raw";return;}
-    if(name==="result-task-process"){state.dataTaskId=id;state.resultsMode="process";state.dataMode="flow";state.dataOutputType="trajectory";state.dataScriptName="";state.dataEvidenceId="";state.dataReportId="";if(state.route==="data-process")return rerender();location.hash="#/data-process";return;}
+    if(name==="results-mode-raw"){state.dataTaskId=id;state.resultsMode="raw";state.dataReturnSource="tasks";if(state.route==="data-raw")return rerender();location.hash="#/data-raw";return;}
+    if(name==="result-task-process"){state.dataTaskId=id;state.resultsMode="process";state.dataReturnSource="tasks";state.dataMode="flow";state.dataOutputType="trajectory";state.dataScriptName="";state.dataEvidenceId="";state.dataReportId="";if(state.route==="data-process")return rerender();location.hash="#/data-process";return;}
+    if(name==="data-back-to-tasks"){state.taskFilter="completed";state.taskPageIndex=1;state.dataReturnSource="";location.hash="#/tasks";return;}
     if(name==="data-mode"){return rerender();}
     if(name==="data-mode-direct"){
       if(id==="overview"){location.hash="#/data";return;}
@@ -3922,7 +3919,6 @@ ${sample.verifyScript}`,
       const [taskId,type]=String(id||"").split("|");
       state.dataAssetPackageId=taskId||state.dataAssetPackageId;
       state.dataTrainingAssetType=type==="rl"?"rl":"sft";
-      state.dataAssetTypeFilter=state.dataTrainingAssetType;
       if(state.route==="data-assets-detail")return rerender();
       location.hash="#/data-assets-detail";
       return;
@@ -3978,8 +3974,17 @@ ${sample.verifyScript}`,
       const result=dataBenchmarkResultForTask(task);
       const sftMeta=dataSftSourceMeta(task);
       const isRl=type==="rl";
+      const isBundle=type==="bundle"||type==="all";
       if(isRl&&dataIsBenchmarkTask(task))return toast("Benchmark 任务不生成 RL Episode","warning");
-      download(`${taskId}.${isRl?"rl-episode.jsonl":"sft.jsonl"}`, isRl?{
+      const sftPayload={
+        schema_version:sftMeta.schemaVersion,
+        task_id:taskId,
+        source_ref:sftMeta.sourceFile,
+        output_ref:sftMeta.outputFile,
+        generation:sftMeta.method,
+        environment_required:false
+      };
+      const rlPayload={
         episode_id:`EP-${String(taskId).replace("JOB-","")}`,
         task_id:taskId,
         source:"RunResult + timeline/rollout + env_ref",
@@ -3988,14 +3993,18 @@ ${sample.verifyScript}`,
         env_ref:{env_id:task.range,snapshot_digest:result.snapshotDigest},
         reward:result.e2eSuccess===true?1:-1,
         done:result.runOutcome!=="pending"
-      }:{
-        schema_version:sftMeta.schemaVersion,
-        task_id:taskId,
-        source_ref:sftMeta.sourceFile,
-        output_ref:sftMeta.outputFile,
-        generation:sftMeta.method,
-        environment_required:false
-      });
+      };
+      if(isBundle){
+        const isBenchmarkTask=dataIsBenchmarkTask(task);
+        download(`${taskId}.training-assets.json`,{
+          task_id:taskId,
+          task_type:isBenchmarkTask?"benchmark":"range",
+          assets:isBenchmarkTask?{sft:sftPayload}:{sft:sftPayload,rl_episode:rlPayload},
+          note:isBenchmarkTask?"Benchmark 任务仅导出 SFT 转换结果，不生成 RL Episode。":"靶场任务导出 SFT 与 RL Episode；外部训练如需环境包，请从原始产物或训练配置导出。"
+        });
+        return toast(`${isBenchmarkTask?"SFT 数据":"SFT / RL 数据包"}已导出`);
+      }
+      download(`${taskId}.${isRl?"rl-episode.jsonl":"sft.jsonl"}`, isRl?rlPayload:sftPayload);
       return toast(`${isRl?"RL Episode":"SFT 数据"}已导出`);
     }
     if(name==="data-rl-env-mode"){
