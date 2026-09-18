@@ -15,8 +15,17 @@ const navigationGroups = [
   {
     name: "资源中心",
     items: [
-      { route: "data", label: "数据中心", icon: "database" },
-      { route: "range-hall", label: "靶场大厅", icon: "boxes" },
+      {
+        id: "data",
+        label: "数据中心",
+        icon: "database",
+        children: [
+          { route: "data", label: "首页", pageLabel: "数据中心 · 首页" },
+          { route: "data-resources", label: "评测题集/靶场", pageLabel: "数据中心 · 评测题集/靶场" },
+          { route: "data-raw", label: "原始产物", pageLabel: "数据中心 · 原始产物" },
+          { route: "data-assets", label: "SFT / RL 数据", pageLabel: "数据中心 · SFT / RL 数据" },
+        ],
+      },
       { route: "gateway", label: "接入网关", icon: "cable" },
       { route: "settings", label: "用户设置", icon: "user-cog" },
     ],
@@ -49,8 +58,15 @@ const routeLabels = {
   ...Object.fromEntries(navigationItems.map((item) => ([item.route, item.pageLabel || item.label]))),
   workbench: "测试任务 · 运行工作台",
   confirm: "测试任务 · 结果确认",
+  "benchmark-detail": "测试任务 · Benchmark 详情",
+  results: "测试任务",
+  "data-process": "数据中心 · 产物详情",
+  "data-assets-detail": "数据中心 · SFT / RL 详情",
+  "data-resources": "数据中心 · 评测题集/靶场",
+  "results-raw": "数据中心 · 原始产物",
+  "results-process": "数据中心 · 产物详情",
+  "results-records": "数据中心 · SFT / RL 数据",
   "training-live": "训练任务 · 实时监控",
-  "range-detail": "靶场环境详情",
   models: "训练任务 · 模型中心",
   login: "SSO 登录",
 };
@@ -112,7 +128,19 @@ function currentRoute() {
 function renderRoute() {
   const route = currentRoute();
   const dashboard = route === "dashboard";
-  const navRoute = route === "workbench" || route === "confirm" ? "tasks" : route === "range-detail" ? "range-hall" : route === "training-live" || route === "models" ? "training" : route;
+  const navRoute = route === "workbench" || route === "confirm" || route === "benchmark-detail"
+    ? "tasks"
+    : route === "training-live" || route === "models"
+      ? "training"
+      : route === "results"
+        ? "tasks"
+        : route === "data-process" || route === "data-assets-detail" || route === "results-process"
+        ? "data"
+        : route === "results-raw"
+          ? "data-raw"
+          : route === "results-records"
+            ? "data-assets"
+            : route;
 
   app.classList.toggle("is-dashboard", dashboard);
   app.classList.toggle("is-inner-page", !dashboard);
