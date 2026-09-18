@@ -1,0 +1,6 @@
+node_modules/
+.env
+*.env
+.feishu.env.txt
+site-release.tgz
+prd-screenshots/

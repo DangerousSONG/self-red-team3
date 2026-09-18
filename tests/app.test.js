@@ -122,7 +122,9 @@ test("uses locally embedded Lucide menu icons", () => {
 
 test("matches the required navigation information architecture", () => {
   assert.match(script, /name: "操作中心",[\s\S]*?route: "tasks", label: "测试任务"[\s\S]*?route: "training", label: "训练任务"/);
-  assert.match(script, /name: "资源中心",[\s\S]*?route: "data", label: "数据中心"[\s\S]*?route: "range-hall", label: "靶场大厅"[\s\S]*?route: "gateway", label: "接入网关"/);
+  assert.doesNotMatch(script, /route: "results", label: "评测结果"/);
+  assert.match(script, /name: "资源中心",[\s\S]*?label: "数据中心"[\s\S]*?route: "data", label: "首页"[\s\S]*?route: "data-resources", label: "评测题集\/靶场"[\s\S]*?route: "data-raw", label: "原始产物"[\s\S]*?route: "data-assets", label: "SFT \/ RL 数据"[\s\S]*?route: "gateway", label: "接入网关"[\s\S]*?route: "settings", label: "用户设置"/);
+  assert.doesNotMatch(script, /route: "range-hall", label: "靶场大厅"/);
   assert.doesNotMatch(script, /id: "test"|id: "training"/);
   assert.match(pagesScript, /pageHead\("测试任务"/);
   assert.doesNotMatch(script, /\{ route: "confirm", label: "结果确认"/);
@@ -180,8 +182,8 @@ test("implements every non-dashboard navigation destination", () => {
   assert.match(html, /<script src="pages\.js"><\/script>/);
   assert.match(script, /window\.RangePages\.render\(route, pageRoot\)/);
   [
-    "tasks", "range-hall", "confirm", "training", "training-live",
-    "data", "gateway", "settings", "login",
+    "tasks", "benchmark-detail", "confirm", "training", "training-live",
+    "data", "data-resources", "data-raw", "data-process", "data-assets", "results", "results-raw", "results-process", "results-records", "gateway", "settings", "login",
   ].forEach((route) => assert.match(pagesScript, new RegExp(`(?:"${route}"|${route.replace("-", "\\-")})`)));
   assert.doesNotMatch(pagesScript, /该界面将在后续逐页梳理与实现/);
 });
@@ -211,7 +213,9 @@ test("syncs the updated result-confirmation workflow into the task center", () =
   assert.doesNotMatch(pagesScript, /查看已办结风险点/);
   assert.match(pagesScript, /reportReady: false/);
   assert.doesNotMatch(pagesScript, /reportsUnlocked|已完成任务尚未解锁/);
-  assert.match(pagesScript, /const visibleReports = state\.reports\.filter/);
+  assert.match(pagesScript, /const resultTasks = \(D\.evaluationDataTasks \|\| \[\]\)/);
+  assert.match(pagesScript, /const completedItems = completedResultItems/);
+  assert.doesNotMatch(pagesScript, /const visibleReports = state\.reports\.filter/);
   assert.match(pagesScript, /if\(name==="generate-report"\)/);
   assert.match(pagesScript, /if\(name==="go-report"\)return reportModal\(id\)/);
   assert.match(pagesScript, /function confirmPage\(\) \{\s*return tasksPage\(\);/);
@@ -257,16 +261,18 @@ test("keeps inner pages usable at 1280px desktop width", () => {
 });
 
 test("fits the test-task table at 1280px without low-value columns", () => {
-  assert.match(pagesScript, /const tableHeads = \["任务编号", "任务 \/ 场景", "执行体", "进度", "状态", ""\]/);
-  assert.match(pagesScript, /colspan="6" class="table-empty"/);
+  assert.match(pagesScript, /const tableHeads = \["任务编号", "任务 \/ 场景", "执行体", "运行状态", "判分结果", "数据产物", "操作"\]/);
+  assert.match(pagesScript, /colspan="7" class="table-empty"/);
   assert.match(pagesScript, /, "task-table"\)\}\$\{pagination\}/);
   assert.match(styles, /\.task-table \{ min-width: 0; table-layout: fixed; \}/);
-  assert.match(styles, /\.task-table th:nth-child\(1\) \{ width: 15%; \}[\s\S]*\.task-table th:nth-child\(2\) \{ width: 24%; \}[\s\S]*\.task-table th:nth-child\(6\) \{ width: 18%; \}/);
+  assert.match(styles, /\.task-table th:nth-child\(1\) \{ width: 11%; \}[\s\S]*\.task-table th:nth-child\(2\) \{ width: 22%; \}[\s\S]*\.task-table th:nth-child\(7\) \{ width: 13%; \}/);
   assert.match(styles, /\.task-actions \{[^}]*justify-content: flex-end;[^}]*gap: 8px;/);
-  assert.match(pagesScript, /<td class="row-actions"><div class="task-actions">/);
+  assert.match(pagesScript, /<td class="row-actions"><div class="task-actions task-actions-compact">/);
+  assert.match(pagesScript, /taskRunStack\(progress\(x\.progress\)/);
+  assert.match(pagesScript, /taskDataStack\(dataTitle/);
   assert.match(styles, /@media \(min-width: 1240px\)/);
   assert.match(styles, /\.task-list-card \.table-wrap \{ overflow-x: hidden; \}/);
-  assert.match(styles, /\.task-table td \{ height: 64px; \}/);
+  assert.match(styles, /\.task-table td \{ height: auto; min-height: 76px; \}/);
   assert.match(styles, /white-space: normal;[\s\S]*overflow-wrap: anywhere;/);
   assert.doesNotMatch(pagesScript, /<td>\$\{esc\(x\.type\)\}<\/td><td>\$\{esc\(x\.agent\)\}<\/td><td class="mono">\$\{x\.concurrency\}/);
 });
@@ -274,7 +280,7 @@ test("fits the test-task table at 1280px without low-value columns", () => {
 test("matches the final requirement-page logic instead of retired variants", () => {
   assert.doesNotMatch(script, /label: "实战演练场"|label: "模型中心"/);
   assert.match(script, /workbench: "测试任务 · 运行工作台"/);
-  assert.match(script, /"range-detail": "靶场环境详情"/);
+  assert.doesNotMatch(script, /"range-detail": "靶场环境详情"/);
   assert.match(script, /models: "训练任务 · 模型中心"/);
   assert.match(pagesScript, /data-action="training-filter"/);
   assert.match(pagesScript, /data-input="training-query"/);
@@ -285,13 +291,80 @@ test("matches the final requirement-page logic instead of retired variants", () 
   assert.doesNotMatch(pagesScript, /生成评测报告（剩余/);
   assert.match(styles, /\.btn:disabled[\s\S]*var\(--disabled-bg\)/);
   assert.match(pagesScript, /function workbenchPage\(\)/);
-  assert.match(pagesScript, /function rangeDetailPage\(\)/);
-  assert.match(pagesScript, /环境拓扑渲染区/);
-  assert.match(pagesScript, /class="realtime-stage topology-placeholder"/);
+  assert.doesNotMatch(pagesScript, /function rangeDetailPage\(\)/);
+  assert.match(pagesScript, /function rangeEnvironmentPreviewModal\(id\)/);
+  assert.match(pagesScript, /网络靶场目录/);
+  assert.match(pagesScript, /range-env-preview/);
   assert.match(pagesScript, /function modelsPage\(\)/);
-  assert.match(pagesScript, /type: prefillEnv \? "range" : null/);
-  assert.match(pagesScript, /type="radio" name="task-question"/);
-  assert.match(pagesScript, /if\(w\.type==="eval"\)/);
+  assert.match(pagesScript, /type: prefillEnv \? "range" : ""/);
+  assert.match(pagesScript, /Benchmark 评测和靶场评测是同级入口/);
+  assert.match(pagesScript, /Benchmark Docker 评测/);
+  assert.match(pagesScript, /function renderBenchmarkWizardStep\(w\)/);
+  assert.match(pagesScript, /benchmarkCreateModes/);
+  assert.match(pagesScript, /按目标领域评测/);
+  assert.match(pagesScript, /按评测方向评测/);
+  assert.match(pagesScript, /两种入口二选一/);
+  assert.match(pagesScript, /Benchmark 评测创建方式/);
+  assert.match(pagesScript, /请选择一种 Benchmark 评测创建方式/);
+  assert.match(pagesScript, /Benchmark 评测 · 选择入口后统一配置/);
+  assert.doesNotMatch(pagesScript, /按指定 Benchmark 评测|按指定Benchmark评测/);
+  assert.match(pagesScript, /漏洞发现/);
+  assert.match(pagesScript, /漏洞复现/);
+  assert.match(pagesScript, /漏洞利用/);
+  assert.match(pagesScript, /漏洞修复/);
+  assert.match(pagesScript, /benchmarkScopeCatalog/);
+  assert.match(pagesScript, /data-action="benchmark-create-mode"/);
+  assert.match(pagesScript, /data-action="benchmark-target-field"/);
+  assert.match(pagesScript, /data-action="benchmark-eval-direction"/);
+  assert.match(pagesScript, /data-action="benchmark-scope-group"/);
+  assert.match(pagesScript, /data-action="benchmark-scope-item"/);
+  assert.doesNotMatch(pagesScript, /data-action="benchmark-domain"/);
+  assert.doesNotMatch(pagesScript, /data-action="benchmark-select"/);
+  assert.doesNotMatch(pagesScript, /data-action="benchmark-difficulty-filter"/);
+  assert.doesNotMatch(pagesScript, /data-action="benchmark-type-filter"/);
+  assert.match(pagesScript, /data-action="benchmark-sampling"/);
+  assert.doesNotMatch(pagesScript, /Label 筛题/);
+  assert.doesNotMatch(pagesScript, /Benchmark 原生 Label/);
+  assert.doesNotMatch(pagesScript, /全部原生 Label/);
+  assert.doesNotMatch(pagesScript, /不存在的技术领域 Label 不在创建流程中模拟/);
+  assert.doesNotMatch(pagesScript, /全部类型 Label/);
+  assert.match(pagesScript, /nativeLabelGroups/);
+  assert.match(pagesScript, /nativeDependency/);
+  assert.match(pagesScript, /optionsByController/);
+  assert.doesNotMatch(pagesScript, /data-label-group/);
+  assert.match(pagesScript, /目标领域/);
+  assert.match(pagesScript, /防护配置/);
+  assert.match(pagesScript, /Stack Canary/);
+  assert.match(styles, /\.benchmark-label-filter button:disabled/);
+  assert.doesNotMatch(pagesScript, /难度 \/ 分级 Label/);
+  assert.match(pagesScript, /抽题数量/);
+  assert.match(pagesScript, /查看详情/);
+  assert.doesNotMatch(pagesScript, /04 生成评测清单/);
+  assert.doesNotMatch(pagesScript, /benchmark-result-section/);
+  assert.match(pagesScript, /简单随机抽样/);
+  assert.match(pagesScript, /全测/);
+  assert.match(pagesScript, /单次任务只选择一个评测方向/);
+  assert.match(pagesScript, /多方向综合评测将拆分子任务运行/);
+  assert.match(pagesScript, /任务族 \+ 防护配置/);
+  assert.match(pagesScript, /T5 → T1 利用能力阶梯/);
+  assert.match(pagesScript, /L0 自主漏洞发现/);
+  assert.match(pagesScript, /L1-L3 输入条件阶梯/);
+  assert.match(pagesScript, /Severity \/ CWE \/ 漏洞家族标签/);
+  assert.match(pagesScript, /CyberGym · Level 0/);
+  assert.match(pagesScript, /CyberGym · Level 1-3/);
+  assert.doesNotMatch(pagesScript, /Patch-only \/ E2E \+ S1-S4 验证阶段/);
+  assert.match(pagesScript, /function benchmarkDetailPage\(\)/);
+  assert.match(pagesScript, /#\/benchmark-detail\?id=/);
+  assert.match(pagesScript, /Benchmark 简介/);
+  assert.match(pagesScript, /维度介绍/);
+  assert.match(pagesScript, /题目总量/);
+  assert.match(pagesScript, /评分标准/);
+  assert.match(pagesScript, /benchmark-intro-grid/);
+  assert.match(pagesScript, /function benchmarkSampleFiles\(suite, sample, domain\)/);
+  assert.match(pagesScript, /README\.md/);
+  assert.match(pagesScript, /agent_tools\.yaml/);
+  assert.match(pagesScript, /result_schema\.json/);
+  assert.match(pagesScript, /漏洞描述 \+ Dockerfile \+ Agent 工具集 \+ 验证脚本/);
   assert.match(pagesScript, /function ticketDetailModal\(id\)/);
   assert.match(pagesScript, /function loginPage\(\)/);
   assert.doesNotMatch(pagesScript, /TEST OPERATIONS|RED VS BLUE|研发中 · 预览版/);
